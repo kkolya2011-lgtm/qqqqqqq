@@ -7,11 +7,12 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public')); // Если захочешь грузить сайт прямо с сервера
+app.use(express.static('public')); 
 
 const BOT_TOKEN = process.env.BOT_TOKEN || '8935072092:AAHZCPqMRF3KGL4nuHFhrZd3Uq1l-w-5PTU';
 const TON_API_KEY = process.env.TON_API_KEY || 'AFJIW3WC32MIRRQAAAAOWITJSJTVK6JPRXS27ZWIINW4HZK4VT6NITKDERBW62ZZ62ZW66Y';
-const WALLET = process.env.WALLET || 'UQD...'; // СЮДА ВСТАВЬ АДРЕС КОШЕЛЬКА (UQ...)
+const WALLET = 'UQAUhd7_xqX1M8ybng3_6NEUH79tAZpHOa8Y6Agkzn9Z74U2'; 
+
 const bot = new TelegramBot(BOT_TOKEN, { polling: true });
 
 // БАЗА ДАННЫХ
@@ -19,7 +20,6 @@ const db = new sqlite3.Database('./db.sqlite');
 db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS users (id TEXT PRIMARY KEY, balance REAL DEFAULT 0, ref_id TEXT, ref_earned REAL DEFAULT 0)`);
     db.run(`CREATE TABLE IF NOT EXISTS deposits (comment TEXT PRIMARY KEY, user_id TEXT, amount REAL, status TEXT DEFAULT 'pending')`);
-    db.run(`CREATE TABLE IF NOT EXISTS promos (user_id TEXT, code TEXT)`);
 });
 
 // БОТ И РЕФЕРАЛКА
@@ -32,9 +32,9 @@ bot.onText(/\/start(?: (.+))?/, (msg, match) => {
             if (ref) bot.sendMessage(ref, `🎉 По твоей ссылке зашел новый игрок!`).catch(()=>{});
         }
     });
-    // Кнопка открытия Mini App (ЗАМЕНИ ССЫЛКУ НА СВОЮ GITHUB PAGES)
+    // ТВОЯ ССЫЛКА УЖЕ ВСТАВЛЕНА
     bot.sendMessage(userId, "Жми кнопку ниже, чтобы играть!", {
-        reply_markup: { inline_keyboard: [[{ text: "🎰 Открыть NoPlay", web_app: { url: "https://ТВОЙ_НИК.github.io/noplay/" } }]] }
+        reply_markup: { inline_keyboard: [[{ text: "🎰 Открыть NoPlay", web_app: { url: "https://kkolya2011-lgtm.github.io/noplay/" } }]] }
     });
 });
 
@@ -81,9 +81,11 @@ setInterval(() => {
                             if (row) {
                                 db.run("UPDATE deposits SET status = 'paid' WHERE comment = ?", [comment]);
                                 db.run("UPDATE users SET balance = balance + ? WHERE id = ?", [row.amount, row.user_id]);
-                                // Реферальные 10%
+                                // Начисление 10% рефереру
                                 db.get("SELECT ref_id FROM users WHERE id = ?", [row.user_id], (e, u) => {
-                                    if (u && u.ref_id) db.run("UPDATE users SET balance = balance + ?, ref_earned = ref_earned + ? WHERE id = ?", [row.amount*0.1, row.amount*0.1, u.ref_id]);
+                                    if (u && u.ref_id) {
+                                        db.run("UPDATE users SET balance = balance + ?, ref_earned = ref_earned + ? WHERE id = ?", [row.amount*0.1, row.amount*0.1, u.ref_id]);
+                                    }
                                 });
                             }
                         });
