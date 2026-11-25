@@ -15,14 +15,12 @@ const WALLET = 'UQAUhd7_xqX1M8ybng3_6NEUH79tAZpHOa8Y6Agkzn9Z74U2';
 
 const bot = new TelegramBot(BOT_TOKEN, { polling: true });
 
-// БАЗА ДАННЫХ
 const db = new sqlite3.Database('./db.sqlite');
 db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS users (id TEXT PRIMARY KEY, balance REAL DEFAULT 0, ref_id TEXT, ref_earned REAL DEFAULT 0)`);
     db.run(`CREATE TABLE IF NOT EXISTS deposits (comment TEXT PRIMARY KEY, user_id TEXT, amount REAL, status TEXT DEFAULT 'pending')`);
 });
 
-// БОТ И РЕФЕРАЛКА
 bot.onText(/\/start(?: (.+))?/, (msg, match) => {
     const userId = String(msg.from.id);
     const ref = match[1];
@@ -32,13 +30,11 @@ bot.onText(/\/start(?: (.+))?/, (msg, match) => {
             if (ref) bot.sendMessage(ref, `🎉 По твоей ссылке зашел новый игрок!`).catch(()=>{});
         }
     });
-    // ТВОЯ ССЫЛКА УЖЕ ВСТАВЛЕНА
     bot.sendMessage(userId, "Жми кнопку ниже, чтобы играть!", {
-        reply_markup: { inline_keyboard: [[{ text: "🎰 Открыть NoPlay", web_app: { url: "https://kkolya2011-lgtm.github.io/noplay/" } }]] }
+        reply_markup: { inline_keyboard: [[{ text: "🎰 Открыть NoPlay", web_app: { url: "https://kkolya2011-lgtm.github.io/qqqqqqq/" } }]] }
     });
 });
 
-// API ДЛЯ САЙТА
 app.post('/api/login', (req, res) => {
     const { id } = req.body;
     db.get("SELECT * FROM users WHERE id = ?", [id], (err, row) => {
@@ -65,7 +61,6 @@ app.post('/api/deposit/check', (req, res) => {
     });
 });
 
-// ВОРКЕР ПРОВЕРКИ TON (раз в 15 сек)
 setInterval(() => {
     const options = { hostname: 'toncenter.com', path: `/api/v2/getTransactions?address=${WALLET}&limit=10`, headers: { 'X-API-Key': TON_API_KEY } };
     https.get(options, (resp) => {
@@ -81,7 +76,6 @@ setInterval(() => {
                             if (row) {
                                 db.run("UPDATE deposits SET status = 'paid' WHERE comment = ?", [comment]);
                                 db.run("UPDATE users SET balance = balance + ? WHERE id = ?", [row.amount, row.user_id]);
-                                // Начисление 10% рефереру
                                 db.get("SELECT ref_id FROM users WHERE id = ?", [row.user_id], (e, u) => {
                                     if (u && u.ref_id) {
                                         db.run("UPDATE users SET balance = balance + ?, ref_earned = ref_earned + ? WHERE id = ?", [row.amount*0.1, row.amount*0.1, u.ref_id]);
