@@ -11,7 +11,7 @@
             --card: rgba(21, 26, 38, 0.3); 
             --accent: #1e3a8a; 
             --accent-glow: #3b82f6;
-            --gold: #ffffff; /* БЕЛЫЙ ТЕКСТ ВМЕСТО ЖЕЛТОГО */
+            --gold: #ffffff; 
             --text: #ffffff; 
             --text-muted: #8a93a6; 
         }
@@ -34,22 +34,11 @@
         .tab-content { display: none; flex: 1; padding: 15px; flex-direction: column; align-items: center; overflow-y: auto; padding-bottom: 90px; }
         .tab-content.active { display: flex; }
 
-        /* Сетка игр */
         .games-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 450px; }
         .game-card { position: relative; border-radius: 16px; overflow: hidden; cursor: pointer; transition: 0.1s; aspect-ratio: 1 / 1; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 20px rgba(0,0,0,0.5); backdrop-filter: blur(5px); }
         .game-card:active { transform: scale(0.96); border-color: var(--accent-glow); }
-        
-        /* ПРОЗРАЧНОСТЬ КАРТИНОК */
-        .game-card img { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: cover; 
-            display: block; 
-            opacity: 0.7; /* Сделал 0.7 для лучшего просвечивания */
-            transition: opacity 0.2s; 
-        }
+        .game-card img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0.7; transition: opacity 0.2s; }
         .game-card:active img { opacity: 1; }
-        
         .game-card h3 { position: absolute; bottom: 0; left: 0; right: 0; padding: 30px 10px 10px 10px; font-size: 14px; font-weight: 900; text-transform: uppercase; text-align: center; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.8); background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%); letter-spacing: 1px; }
 
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 100; opacity: 0; pointer-events: none; transition: 0.3s; }
@@ -78,9 +67,27 @@
         .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; height: 70px; background: rgba(21, 26, 38, 0.95); backdrop-filter: blur(10px); display: flex; border-top: 1px solid rgba(255,255,255,0.05); z-index: 50; }
         .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-muted); font-size: 12px; font-weight: 600; cursor: pointer; }
         .nav-item.active { color: var(--accent-glow); }
+
+        /* ЭКРАН БЛОКИРОВКИ ПОДПИСКИ */
+        #sub-block {
+            position: fixed; inset: 0; background: #050810; z-index: 999; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center;
+        }
+        #sub-block h2 { color: #fff; margin-bottom: 10px; font-size: 24px; }
+        #sub-block p { color: var(--text-muted); margin-bottom: 20px; font-size: 14px; }
+        .sub-btn { display: block; width: 100%; max-width: 300px; padding: 15px; background: var(--accent-glow); color: #fff; text-decoration: none; border-radius: 10px; font-weight: bold; margin-bottom: 10px; }
+        .check-btn { display: block; width: 100%; max-width: 300px; padding: 15px; background: #10b981; color: #fff; border: none; border-radius: 10px; font-weight: bold; margin-top: 10px; cursor: pointer; font-size: 16px; }
     </style>
 </head>
 <body>
+    <!-- ЭКРАН БЛОКИРОВКИ -->
+    <div id="sub-block">
+        <h2>Подпишись на каналы</h2>
+        <p>Чтобы играть, нужно подписаться на наши каналы.</p>
+        <a href="https://t.me/noplayhub" target="_blank" class="sub-btn">Подписаться на NoplayHub</a>
+        <a href="https://t.me/nosaler" target="_blank" class="sub-btn">Подписаться на Nosaler</a>
+        <button class="check-btn" onclick="checkSubscription()">Я ПОДПИСАЛСЯ</button>
+    </div>
+
     <video autoplay loop muted playsinline id="bg-video">
         <source src="https://yourimageshare.com/ib/K8KlPFYYah.mp4" type="video/mp4">
     </video>
@@ -154,15 +161,24 @@
             try { const res = await fetch(API_URL + path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }); return await res.json(); } catch(e) { return null; }
         }
 
-        async function init() {
-            document.getElementById('ref-link-text').innerText = `t.me/noplayrobot?start=${userId}`;
-
+        // Проверка подписки при старте
+        async function checkSubscription() {
             const res = await api('/api/login', { id: userId });
-            if (res) { 
+            
+            if (res && res.isSubscribed === true) {
+                // Если подписан - убираем экран, загружаем баланс
+                document.getElementById('sub-block').style.display = 'none';
+                document.getElementById('ref-link-text').innerText = `t.me/noplayrobot?start=${userId}`;
                 balance = res.balance; 
                 refEarned = res.ref_earned || 0;
                 document.getElementById('balance-amount').innerText = balance.toFixed(2); 
                 document.getElementById('ref-earned').innerText = refEarned.toFixed(2) + ' TON';
+            } else {
+                // Если не подписан - показываем экран (если еще не показан)
+                document.getElementById('sub-block').style.display = 'flex';
+                if (res && res.isSubscribed === false) {
+                    tg.showAlert('Вы еще не подписались на все каналы!');
+                }
             }
         }
 
@@ -196,13 +212,14 @@
                     </div>`).join('');
             } else { document.getElementById('inv-list').innerHTML = '<div style="color: #888; padding: 20px;">Инвентарь пуст</div>'; }
         }
-        function sellItem(id, value) { tg.showAlert(`Вы продали предмет за ${value} TON (в разработке)`); closeModal('invModal'); init(); }
+        function sellItem(id, value) { tg.showAlert(`Вы продали предмет за ${value} TON (в разработке)`); closeModal('invModal'); checkSubscription(); }
         function withdrawItem(id) { tg.showAlert('Заявка на вывод отправлена администратору!'); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
         function openDeposit() { tg.showAlert('Пополнение скоро будет доступно!'); }
         function activatePromo() { tg.showAlert('Промокоды пока не работают.'); }
 
-        init();
+        // Запускаем проверку при загрузке
+        checkSubscription();
     </script>
 </body>
 </html>
