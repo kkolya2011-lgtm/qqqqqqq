@@ -12,16 +12,17 @@
         body { background: #000; color: var(--text); display: flex; flex-direction: column; height: 100vh; overflow: hidden; position: relative; }
         #bg-video { position: fixed; top: 50%; left: 50%; min-width: 100%; min-height: 100%; width: auto; height: auto; transform: translate(-50%, -50%); z-index: -2; object-fit: cover; opacity: 0.7; }
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 8, 16, 0.6); z-index: -1; }
+        
         header { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; background: rgba(21, 26, 38, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.05); z-index: 10; }
         .logo { font-weight: 900; font-size: 20px; letter-spacing: 1px; color: #fff; }
         .logo span { color: var(--accent-glow); }
         .header-right { display: flex; gap: 10px; align-items: center; }
         .btn-inv { background: var(--accent); color: #fff; padding: 6px 12px; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; border: none; }
         .balance { background: rgba(59,130,246,0.2); padding: 6px 12px; border-radius: 20px; font-weight: 700; border: 1px solid rgba(59,130,246,0.5); cursor: pointer; color: var(--gold); font-size: 14px; }
+
         .tab-content { display: none; flex: 1; padding: 15px; flex-direction: column; align-items: center; overflow-y: auto; padding-bottom: 90px; }
         .tab-content.active { display: flex; }
         
-        /* ПЛАШКИ */
         .promo-banners { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 450px; margin-bottom: 15px; }
         .banner { display: flex; align-items: center; justify-content: space-between; background: rgba(21, 26, 38, 0.8); backdrop-filter: blur(10px); padding: 12px 15px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); text-decoration: none; color: white; transition: 0.2s; }
         .banner:active { transform: scale(0.98); }
@@ -32,14 +33,12 @@
         .banner-text p { font-size: 11px; color: var(--text-muted); }
         .banner-btn { background: #ffffff; color: #000; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; }
 
-        /* ИГРЫ */
         .games-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 450px; }
         .game-card { position: relative; border-radius: 16px; overflow: hidden; cursor: pointer; transition: 0.1s; aspect-ratio: 1 / 1; border: 1px solid rgba(255,255,255,0.1); }
         .game-card:active { transform: scale(0.96); }
         .game-card img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0.85; }
         .game-card h3 { position: absolute; bottom: 0; left: 0; right: 0; padding: 30px 10px 10px 10px; font-size: 14px; font-weight: 900; text-transform: uppercase; text-align: center; color: #fff; background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%); }
 
-        /* МОДАЛКИ */
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 100; opacity: 0; pointer-events: none; transition: 0.3s; }
         .modal.active { opacity: 1; pointer-events: all; }
         .modal-box { background: var(--card); backdrop-filter: blur(15px); width: 95%; max-width: 400px; border-radius: 20px; padding: 20px; text-align: center; border: 1px solid var(--accent-glow); max-height: 90vh; overflow-y: auto; }
@@ -48,24 +47,18 @@
         .btn-main { width: 100%; padding: 15px; border-radius: 10px; background: var(--accent-glow); color: #fff; border: none; font-size: 16px; font-weight: bold; cursor: pointer; margin-bottom: 10px; }
         .btn-green { background: #10b981; }
         .btn-close { background: #333; color: white; border: none; padding: 12px; border-radius: 10px; width: 100%; margin-top: 10px; font-weight: bold; cursor: pointer; }
-                /* СЕТКА МИН */
+
         .mines-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 15px 0; }
         .mine-cell { width: 100%; aspect-ratio: 1/1; background: rgba(30, 58, 138, 0.5); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); }
         .mine-cell.opened { background: #0f172a; pointer-events: none; }
         .mine-cell.mine { background: #7f1d1d; }
 
-        /* РУЛЕТКА/КОЛЕСО */
         .wheel-container { position: relative; width: 250px; height: 250px; margin: 0 auto 20px; border-radius: 50%; border: 5px solid var(--accent-glow); display: flex; align-items: center; justify-content: center; transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); background: conic-gradient(#10b981 0 45deg, #333 45deg 90deg, #1e3a8a 90deg 135deg, #333 135deg 180deg, #10b981 180deg 225deg, #333 225deg 270deg, #1e3a8a 270deg 315deg, #333 315deg 360deg); }
         .wheel-center { width: 50px; height: 50px; background: #000; border-radius: 50%; z-index: 2; border: 2px solid #fff; }
 
-        /* НАПЕРСТКИ */
         .cups-container { display: flex; justify-content: space-around; margin: 20px 0; font-size: 50px; cursor: pointer; }
         .cup { transition: 0.2s; }
         .cup:active { transform: scale(0.9); }
-
-        /* СЛОТЫ */
-        .slots-container { display: flex; justify-content: center; gap: 10px; margin: 20px 0; }
-        .slot-item { width: 70px; height: 90px; background: #000; border: 2px solid var(--accent-glow); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 40px; }
 
         .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; height: 70px; background: rgba(21, 26, 38, 0.95); backdrop-filter: blur(10px); display: flex; border-top: 1px solid rgba(255,255,255,0.05); z-index: 50; }
         .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-muted); font-size: 12px; font-weight: 600; cursor: pointer; }
@@ -73,6 +66,11 @@
 
         #sub-block { position: fixed; inset: 0; background: #050810; z-index: 999; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; }
         .sub-btn { display: block; width: 100%; max-width: 300px; padding: 15px; background: var(--accent-glow); color: #fff; text-decoration: none; border-radius: 10px; font-weight: bold; margin-bottom: 10px; }
+        
+        .upg-slots { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.5); padding: 15px; border-radius: 16px; margin-bottom: 15px; border: 1px solid #333;}
+        .upg-slot { width: 80px; height: 80px; background: #111; border-radius: 10px; display: flex; align-items: center; justify-content: center; border: 2px dashed #444; cursor: pointer; font-size: 10px;}
+        .upg-slot img { width: 60px; height: 60px; object-fit: contain;}
+        .upg-arrow { font-size: 24px; color: var(--accent-glow); }
     </style>
 </head>
 <body>
@@ -100,8 +98,12 @@
             <a href="https://t.me/nosalerchat" target="_blank" class="banner"><div class="banner-icon" style="background:#10b981;"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></div><div class="banner-text"><h4>Наш чат</h4><p>Общение</p></div><div class="banner-btn">ПЕРЕЙТИ</div></a>
         </div>
         <div class="games-grid">
-            <div class="game-card" onclick="openCrash()"><img src="https://i.ibb.co/d4CCjjxm/image.png"><h3>Ракетка</h3></div>
+            <div class="game-card" onclick="playGame('case_free')"><img src="https://i.ibb.co/CK8ZGBbs/399-20261127011759.png"><h3>Фри Кейс</h3></div>
+            <div class="game-card" onclick="playGame('case_1')"><img src="https://i.ibb.co/RGCPyCx2/400-20261127011851.png"><h3>Кейс 1 TON</h3></div>
+            <div class="game-card" onclick="playGame('case_10')"><img src="https://i.ibb.co/Y7NPRTvg/401-20261127011527.png"><h3>Кейс 10 TON</h3></div>
+            
             <div class="game-card" onclick="openUpgrade()"><img src="https://i.ibb.co/qMy39d5G/image.png"><h3>Апгрейдер</h3></div>
+            <div class="game-card" onclick="openCrash()"><img src="https://i.ibb.co/d4CCjjxm/image.png"><h3>Ракетка</h3></div>
             <div class="game-card" onclick="openWheel()"><img src="https://i.ibb.co/bjqvWQPS/image.png"><h3>Рулетка</h3></div>
             <div class="game-card" onclick="openCups()"><img src="https://i.ibb.co/qMNRD4rT/image.png"><h3>Наперстки</h3></div>
             <div class="game-card" onclick="openClaw()"><img src="https://i.ibb.co/HLwPtyTV/Telegram.png"><h3>Кран</h3></div>
@@ -119,108 +121,68 @@
             </div>
         </div>
 
-         <div class="profile-box" style="width:100%; max-width:400px; background:var(--card); padding:20px; border-radius:16px;">
+        <div class="profile-box" style="width:100%; max-width:400px; background:var(--card); padding:20px; border-radius:16px; margin-top:15px;">
             <h3>Промокод</h3>
             <div style="display:flex; gap:10px;">
                 <input type="text" id="promo-code" placeholder="Введите код..." style="flex:1; padding:10px; border-radius:8px; background:#000; color:#fff; border:1px solid #333; outline:none;">
                 <button onclick="activatePromo()" style="background:var(--accent-glow); color:#fff; border:none; padding:0 15px; border-radius:8px; font-weight:bold; cursor:pointer;">ВВОД</button>
             </div>
         </div>
-        <!-- КОНЕЦ БЛОКА -->
-
     </div>
-    
-       <!-- МОДАЛКА ИНВЕНТАРЯ -->
+
     <div class="modal" id="invModal"><div class="modal-box"><h2>Инвентарь</h2><div id="inv-list" style="color:#888; margin-bottom:20px;">Загрузка...</div><button class="btn-close" onclick="closeModal('invModal')">ЗАКРЫТЬ</button></div></div>
 
-    <!-- МОДАЛКА РАКЕТКИ -->
+    <div class="modal" id="upgradeModal"><div class="modal-box">
+        <h2>АПГРЕЙДЕР</h2>
+        <div class="upg-slots">
+            <div class="upg-slot" id="upgSlotLeft" onclick="openInventory(true)">Выбрать</div>
+            <div class="upg-arrow">➜</div>
+            <div class="upg-slot" id="upgSlotRight">?</div>
+        </div>
+        <div style="display:flex; gap:8px; margin-bottom:15px;">
+            <button class="btn-main" style="margin:0; padding:10px; background:var(--accent);" onclick="setUpgMult(1.5, this)">x1.5</button>
+            <button class="btn-main" style="margin:0; padding:10px; background:var(--accent-glow);" onclick="setUpgMult(2, this)">x2</button>
+            <button class="btn-main" style="margin:0; padding:10px; background:var(--accent);" onclick="setUpgMult(5, this)">x5</button>
+        </div>
+        <button class="btn-main btn-green" onclick="doUpgrade()">АПГРЕЙД</button>
+        <button class="btn-close" onclick="closeModal('upgradeModal')">ЗАКРЫТЬ</button>
+    </div></div>
+
     <div class="modal" id="crashModal"><div class="modal-box">
         <h2 id="crashMult" style="font-size:40px; color:var(--gold);">1.00x</h2>
         <div id="crashIcon" style="font-size:50px; margin-bottom:20px;">🚀</div>
-        <div id="crashControls">
-            <input type="number" id="crashBet" class="input-field" placeholder="Ставка в TON" min="1">
-            <button class="btn-main" onclick="startCrash()">ЗАПУСТИТЬ</button>
-        </div>
-        <div id="crashPlay" style="display:none;">
-            <button class="btn-main btn-green" onclick="cashoutCrash()">ЗАБРАТЬ <span id="crashWin">0.00</span> TON</button>
-        </div>
+        <div id="crashControls"><input type="number" id="crashBet" class="input-field" placeholder="Ставка в TON" min="1"><button class="btn-main" onclick="startCrash()">ЗАПУСТИТЬ</button></div>
+        <div id="crashPlay" style="display:none;"><button class="btn-main btn-green" onclick="cashoutCrash()">ЗАБРАТЬ <span id="crashWin">0.00</span> TON</button></div>
         <button class="btn-close" onclick="closeCrash()">ЗАКРЫТЬ</button>
     </div></div>
 
-    <!-- МОДАЛКА МИН -->
     <div class="modal" id="minesModal"><div class="modal-box">
         <h2>МИНЫ</h2>
-        <div id="minesControls">
-            <input type="number" id="minesBet" class="input-field" placeholder="Ставка в TON" min="1">
-            <select id="minesCount" class="input-field">
-                <option value="1">1 мина</option>
-                <option value="3" selected>3 мины</option>
-                <option value="5">5 мин</option>
-                <option value="10">10 мин</option>
-            </select>
-            <button class="btn-main" onclick="startMines()">НАЧАТЬ</button>
-        </div>
-        <div id="minesPlay" style="display:none;">
-            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                <span>Множитель: <b id="minesMult">x1.00</b></span>
-                <span>Выигрыш: <b id="minesWin" style="color:var(--gold);">0.00 TON</b></span>
-            </div>
-            <div class="mines-grid" id="minesGrid"></div>
-            <button class="btn-main btn-green" onclick="cashoutMines()">ЗАБРАТЬ</button>
-        </div>
+        <div id="minesControls"><input type="number" id="minesBet" class="input-field" placeholder="Ставка в TON" min="1"><select id="minesCount" class="input-field"><option value="1">1 мина</option><option value="3" selected>3 мины</option><option value="5">5 мин</option><option value="10">10 мин</option></select><button class="btn-main" onclick="startMines()">НАЧАТЬ</button></div>
+        <div id="minesPlay" style="display:none;"><div style="display:flex; justify-content:space-between; margin-bottom:10px;"><span>Множитель: <b id="minesMult">x1.00</b></span><span>Выигрыш: <b id="minesWin" style="color:var(--gold);">0.00 TON</b></span></div><div class="mines-grid" id="minesGrid"></div><button class="btn-main btn-green" onclick="cashoutMines()">ЗАБРАТЬ</button></div>
         <button class="btn-close" onclick="closeMines()">ЗАКРЫТЬ</button>
     </div></div>
 
-    <!-- МОДАЛКА РУЛЕТКИ -->
-    <div class="modal" id="wheelModal"><div class="modal-box">
-        <h2>РУЛЕТКА</h2>
-        <div class="wheel-container" id="wheelObj"><div class="wheel-center"></div></div>
-        <input type="number" id="wheelBet" class="input-field" placeholder="Ставка в TON" min="1">
-        <button class="btn-main" id="wheelBtn" onclick="spinWheel()">КРУТИТЬ</button>
-        <button class="btn-close" onclick="closeModal('wheelModal')">ЗАКРЫТЬ</button>
-    </div></div>
+    <div class="modal" id="wheelModal"><div class="modal-box"><h2>РУЛЕТКА</h2><div class="wheel-container" id="wheelObj"><div class="wheel-center"></div></div><input type="number" id="wheelBet" class="input-field" placeholder="Ставка в TON" min="1"><button class="btn-main" id="wheelBtn" onclick="spinWheel()">КРУТИТЬ</button><button class="btn-close" onclick="closeModal('wheelModal')">ЗАКРЫТЬ</button></div></div>
 
-    <!-- МОДАЛКА НАПЕРСТКОВ -->
-    <div class="modal" id="cupsModal"><div class="modal-box">
-        <h2>НАПЕРСТКИ</h2>
-        <div style="font-size:50px; margin-bottom:15px;" id="cupsDisplay">👀 🥤 🥤 🥤</div>
-        <div class="cups-container" id="cupsPlay" style="display:none;">
-            <div class="cup" onclick="playCups(1)">🥤</div>
-            <div class="cup" onclick="playCups(2)">🥤</div>
-            <div class="cup" onclick="playCups(3)">🥤</div>
-        </div>
-        <div id="cupsControls">
-            <input type="number" id="cupsBet" class="input-field" placeholder="Ставка в TON" min="1">
-            <button class="btn-main" onclick="startCups()">ИГРАТЬ</button>
-        </div>
-        <button class="btn-close" onclick="closeCups()">ЗАКРЫТЬ</button>
-    </div></div>
+    <div class="modal" id="cupsModal"><div class="modal-box"><h2>НАПЕРСТКИ</h2><div style="font-size:50px; margin-bottom:15px;" id="cupsDisplay">👀 🥤 🥤 🥤</div><div class="cups-container" id="cupsPlay" style="display:none;"><div class="cup" onclick="playCups(1)">🥤</div><div class="cup" onclick="playCups(2)">🥤</div><div class="cup" onclick="playCups(3)">🥤</div></div><div id="cupsControls"><input type="number" id="cupsBet" class="input-field" placeholder="Ставка в TON" min="1"><button class="btn-main" onclick="startCups()">ИГРАТЬ</button></div><button class="btn-close" onclick="closeCups()">ЗАКРЫТЬ</button></div></div>
 
-    <!-- МОДАЛКА КРАНА -->
-    <div class="modal" id="clawModal"><div class="modal-box">
-        <h2>КРАН</h2>
-        <div style="font-size:50px; margin-bottom:20px;" id="clawIcon">🕹️</div>
-        <input type="number" id="clawBet" class="input-field" placeholder="Ставка в TON" min="1">
-        <button class="btn-main" id="clawBtn" onclick="playClaw()">ОПУСТИТЬ КРАН</button>
-        <button class="btn-close" onclick="closeModal('clawModal')">ЗАКРЫТЬ</button>
-    </div></div>
+    <div class="modal" id="clawModal"><div class="modal-box"><h2>КРАН</h2><div style="font-size:50px; margin-bottom:20px;" id="clawIcon">🕹️</div><input type="number" id="clawBet" class="input-field" placeholder="Ставка в TON" min="1"><button class="btn-main" id="clawBtn" onclick="playClaw()">ОПУСТИТЬ КРАН</button><button class="btn-close" onclick="closeModal('clawModal')">ЗАКРЫТЬ</button></div></div>
 
-    <!-- МОДАЛКА АПГРЕЙДА (Упрощенная) -->
-    <div class="modal" id="upgradeModal"><div class="modal-box">
-        <h2>АПГРЕЙДЕР</h2>
-        <p style="color:#aaa; margin-bottom:20px;">Функция в разработке. Скоро здесь можно будет улучшать подарки!</p>
-        <button class="btn-close" onclick="closeModal('upgradeModal')">ЗАКРЫТЬ</button>
-    </div></div>
+    <div class="modal" id="depositModal"><div class="modal-box"><h2>ПОПОЛНЕНИЕ</h2><input type="number" class="input-field" id="deposit-amount" placeholder="Сумма TON" min="1"><button class="btn-main" onclick="payDeposit()">ОПЛАТИТЬ</button><button class="btn-close" onclick="closeModal('depositModal')">ОТМЕНА</button></div></div>
 
     <nav class="nav-bar">
         <div class="nav-item active" onclick="switchTab('games', this)">ИГРЫ</div>
         <div class="nav-item" onclick="switchTab('profile', this)">ПРОФИЛЬ</div>
     </nav>
-        <script>
+
+    <script>
         const API_URL = 'https://noplayapi.onrender.com'; 
         const tg = window.Telegram.WebApp; tg.expand();
         const userId = tg.initDataUnsafe?.user?.id || 'guest';
         let balance = 0;
+        let tonConnectUI;
+        try { tonConnectUI = new TON_CONNECT_UI.TonConnectUI({ manifestUrl: 'https://kkolya2011-lgtm.github.io/qqqqqqq/tonconnect-manifest.json' }); } catch(e) {}
 
         async function api(path, body) {
             try { const res = await fetch(API_URL + path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }); return await res.json(); } catch(e) { return {error: 'Сетевая ошибка'}; }
@@ -243,47 +205,84 @@
         function updateBal(newBal) { balance = newBal; document.getElementById('balance-amount').innerText = balance.toFixed(2); }
         function switchTab(name, el) { document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active')); document.getElementById('tab-' + name).classList.add('active'); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); el.classList.add('active'); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-        function openDeposit() { tg.showAlert('Пополнение скоро будет!'); }
         function copyRef() { navigator.clipboard.writeText(document.getElementById('ref-link-text').innerText).then(() => tg.showAlert('Скопировано!')); }
+        function playGame(game) { tg.showAlert('Игра в разработке: ' + game); }
+        function openDeposit() { document.getElementById('depositModal').classList.add('active'); }
 
-        // --- ИНВЕНТАРЬ ---
-        async function openInventory() {
+        async function activatePromo() {
+            const code = document.getElementById('promo-code').value.trim();
+            if (!code) return;
+            const res = await api('/api/promo/activate', { id: userId, code });
+            if (res.error) tg.showAlert(res.error);
+            else if (res.success) { tg.showAlert(`✅ Промокод активирован! +${res.amount} TON`); checkSubscription(); document.getElementById('promo-code').value = ''; }
+        }
+
+        async function payDeposit() {
+            const amount = parseFloat(document.getElementById('deposit-amount').value);
+            if (!amount || amount < 1) return tg.showAlert('Минимум 1 TON');
+            if (!tonConnectUI) return tg.showAlert('Ошибка TON Connect');
+            closeModal('depositModal');
+            const res = await api('/api/deposit/create', { id: userId, amount });
+            if (!res || !res.comment) return tg.showAlert('Ошибка сервера');
+            try {
+                const payload = btoa(unescape(encodeURIComponent(res.comment)));
+                const tx = { validUntil: Math.floor(Date.now() / 1000) + 600, messages: [{ address: res.wallet, amount: (amount * 1e9).toString(), payload: payload }] };
+                await tonConnectUI.sendTransaction(tx);
+                tg.showAlert('Ждем подтверждения сети...');
+                let checks = 0;
+                const interval = setInterval(async () => {
+                    checks++;
+                    const check = await api('/api/deposit/check', { comment: res.comment });
+                    if (check && check.status === 'paid') { clearInterval(interval); tg.showAlert('✅ Баланс пополнен!'); checkSubscription(); }
+                    else if (checks > 24) { clearInterval(interval); tg.showAlert('Долго нет ответа.'); }
+                }, 5000);
+            } catch(e) { tg.showAlert('Отменено или ошибка'); }
+        }
+
+        async function openInventory(forUpgrade = false) {
             document.getElementById('invModal').classList.add('active');
             document.getElementById('inv-list').innerHTML = 'Загрузка...';
             const res = await api('/api/inventory', { id: userId });
             if (res && res.length > 0) {
-                document.getElementById('inv-list').innerHTML = res.map(item => `<div style="display:flex; justify-content:space-between; background:#000; padding:10px; margin-bottom:10px; border-radius:8px;"><div style="display:flex; align-items:center; gap:10px;"><img src="${item.img}" width="30"> ${item.name}</div><button class="btn-main" style="width:auto; padding:5px 10px; margin:0; font-size:12px;" onclick="sellItem(${item.id}, ${item.value})">ПРОДАТЬ</button></div>`).join('');
-            } else { document.getElementById('inv-list').innerHTML = 'Пусто'; }
+                document.getElementById('inv-list').innerHTML = res.map(item => `
+                    <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.5); padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #333;">
+                        <div style="display:flex; align-items:center; gap:10px;"><img src="${item.img}" width="40" style="border-radius:5px;"> <div style="text-align:left;"><div style="font-size:12px; font-weight:bold;">${item.name}</div><div style="font-size:10px; color:#aaa;">${item.value} TON</div></div></div>
+                        <div style="display:flex; gap:5px;">${forUpgrade ? `<button class="btn-main" style="width:auto; margin:0; padding:5px 10px; font-size:12px;" onclick="selectUpgItem(${item.id}, '${item.img}')">ВЫБРАТЬ</button>` : `<button class="btn-main btn-green" style="width:auto; margin:0; padding:5px 10px; font-size:12px;" onclick="sellItem(${item.id}, ${item.value})">ПРОДАТЬ</button>`}</div>
+                    </div>`).join('');
+            } else { document.getElementById('inv-list').innerHTML = '<div style="color: #888; padding: 20px;">Инвентарь пуст</div>'; }
         }
-        async function sellItem(id, value) {
-            // Заглушка продажи
-            tg.showAlert(`Вы продали предмет за ${value} TON`);
-            closeModal('invModal');
+        
+        function sellItem(id, value) { tg.showAlert(`Вы продали предмет за ${value} TON`); closeModal('invModal'); }
+        function selectUpgItem(id, img) { upgItemId = id; document.getElementById('upgSlotLeft').innerHTML = `<img src="${img}" style="width:100%;">`; closeModal('invModal'); }
+
+        // --- АПГРЕЙДЕР ---
+        let upgItemId = null, upgMultiplier = 2;
+        function openUpgrade() { document.getElementById('upgradeModal').classList.add('active'); document.getElementById('upgSlotLeft').innerHTML = 'Выбрать'; document.getElementById('upgSlotRight').innerHTML = '?'; upgItemId = null; }
+        function setUpgMult(mult, btn) { upgMultiplier = mult; document.querySelectorAll('#upgradeModal .btn-main').forEach(b => b.style.background = 'var(--accent)'); btn.style.background = 'var(--accent-glow)'; }
+        async function doUpgrade() {
+            if (!upgItemId) return tg.showAlert('Выбери предмет!');
+            document.getElementById('upgSlotRight').innerHTML = '...';
+            const res = await api('/api/upgrade', { id: userId, itemId: upgItemId, targetMultiplier: upgMultiplier });
+            if (res.error) { tg.showAlert(res.error); document.getElementById('upgSlotRight').innerHTML = '?'; }
+            else if (res.success) { tg.showAlert(`УСПЕХ!`); document.getElementById('upgSlotRight').innerHTML = `<img src="${res.newItem.img}" style="width:100%;">`; upgItemId = null; }
+            else { tg.showAlert(`СГОРЕЛ!`); document.getElementById('upgSlotRight').innerHTML = '💥'; upgItemId = null; }
         }
-                    // --- 1. РАКЕТКА (CRASH) ---
+
+        // --- РАКЕТКА ---
         let cInterval, cMult = 1, cBet = 0, cGameId = null, cCrashPt = 0;
         function openCrash() { document.getElementById('crashModal').classList.add('active'); resetCrash(); }
         function closeCrash() { clearInterval(cInterval); closeModal('crashModal'); checkSubscription(); }
-        function resetCrash() {
-            document.getElementById('crashMult').innerText = '1.00x';
-            document.getElementById('crashMult').style.color = 'var(--gold)';
-            document.getElementById('crashIcon').innerText = '🚀';
-            document.getElementById('crashControls').style.display = 'block';
-            document.getElementById('crashPlay').style.display = 'none';
-            cMult = 1.00;
-        }
+        function resetCrash() { document.getElementById('crashMult').innerText = '1.00x'; document.getElementById('crashMult').style.color = 'var(--gold)'; document.getElementById('crashIcon').innerText = '🚀'; document.getElementById('crashControls').style.display = 'block'; document.getElementById('crashPlay').style.display = 'none'; cMult = 1.00; }
         async function startCrash() {
             const bet = parseFloat(document.getElementById('crashBet').value);
             if (!bet || bet < 1) return tg.showAlert('Мин. ставка 1 TON');
             if (balance < bet) return tg.showAlert('Мало средств');
             const res = await api('/api/crash/start', { id: userId, bet });
             if (res.error) return tg.showAlert(res.error);
-            
             cBet = bet; cGameId = res.gameId; cCrashPt = res.crashPoint;
             updateBal(balance - bet);
             document.getElementById('crashControls').style.display = 'none';
             document.getElementById('crashPlay').style.display = 'block';
-
             cInterval = setInterval(() => {
                 cMult += 0.05;
                 document.getElementById('crashMult').innerText = cMult.toFixed(2) + 'x';
@@ -291,13 +290,7 @@
                 if (cMult >= cCrashPt) { clearInterval(cInterval); crashBoom(); }
             }, 100);
         }
-        function crashBoom() {
-            document.getElementById('crashMult').innerText = 'ВЗРЫВ';
-            document.getElementById('crashMult').style.color = 'red';
-            document.getElementById('crashIcon').innerText = '💥';
-            document.getElementById('crashPlay').style.display = 'none';
-            setTimeout(closeCrash, 2000);
-        }
+        function crashBoom() { document.getElementById('crashMult').innerText = 'ВЗРЫВ'; document.getElementById('crashMult').style.color = 'red'; document.getElementById('crashIcon').innerText = '💥'; document.getElementById('crashPlay').style.display = 'none'; setTimeout(closeCrash, 2000); }
         async function cashoutCrash() {
             clearInterval(cInterval);
             const res = await api('/api/crash/cashout', { id: userId, gameId: cGameId, multiplier: cMult, bet: cBet });
@@ -306,31 +299,22 @@
             document.getElementById('crashPlay').style.display = 'none';
             setTimeout(closeCrash, 1500);
         }
-
-        // --- 2. МИНЫ (MINES) ---
+               // --- МИНЫ ---
         let mGameId = null, mBet = 0, mOpened = 0, mMult = 1.0, mMines = 3;
         function openMines() { document.getElementById('minesModal').classList.add('active'); resetMines(); }
         function closeMines() { closeModal('minesModal'); checkSubscription(); }
-        function resetMines() {
-            document.getElementById('minesControls').style.display = 'block';
-            document.getElementById('minesPlay').style.display = 'none';
-            document.getElementById('minesGrid').innerHTML = '';
-            mOpened = 0; mMult = 1.0;
-        }
+        function resetMines() { document.getElementById('minesControls').style.display = 'block'; document.getElementById('minesPlay').style.display = 'none'; document.getElementById('minesGrid').innerHTML = ''; mOpened = 0; mMult = 1.0; }
         async function startMines() {
             const bet = parseFloat(document.getElementById('minesBet').value);
             mMines = parseInt(document.getElementById('minesCount').value);
             if (!bet || bet < 1) return tg.showAlert('Мин. ставка 1 TON');
             if (balance < bet) return tg.showAlert('Мало средств');
-            
             const res = await api('/api/mines/start', { id: userId, bet, mines: mMines });
             if (res.error) return tg.showAlert(res.error);
-            
             mGameId = res.gameId; mBet = bet;
             updateBal(balance - bet);
             document.getElementById('minesControls').style.display = 'none';
             document.getElementById('minesPlay').style.display = 'block';
-            
             let html = '';
             for(let i=0; i<25; i++) html += `<div class="mine-cell" id="mcell-${i}" onclick="clickMine(${i})"></div>`;
             document.getElementById('minesGrid').innerHTML = html;
@@ -340,28 +324,18 @@
             const cell = document.getElementById(`mcell-${idx}`);
             if (cell.classList.contains('opened')) return;
             const res = await api('/api/mines/click', { id: userId, gameId: mGameId, cellIndex: idx, currentMultiplier: mMult });
-            if (res.isMine) {
-                cell.classList.add('opened', 'mine'); cell.innerText = '💥';
-                tg.showAlert('Взрыв! Вы проиграли.');
-                setTimeout(closeMines, 2000);
-            } else {
-                cell.classList.add('opened'); cell.innerText = '💎';
-                mOpened++;
-                mMult = 1 / (1 - (mOpened / (25 - mMines)));
-                updateMinesUI();
-            }
+            if (res.isMine) { cell.classList.add('opened', 'mine'); cell.innerText = '💥'; tg.showAlert('Взрыв! Вы проиграли.'); setTimeout(closeMines, 2000); }
+            else { cell.classList.add('opened'); cell.innerText = '💎'; mOpened++; mMult = 1 / (1 - (mOpened / (25 - mMines))); updateMinesUI(); }
         }
-        function updateMinesUI() {
-            document.getElementById('minesMult').innerText = 'x' + mMult.toFixed(2);
-            document.getElementById('minesWin').innerText = (mBet * mMult).toFixed(2) + ' TON';
-        }
+        function updateMinesUI() { document.getElementById('minesMult').innerText = 'x' + mMult.toFixed(2); document.getElementById('minesWin').innerText = (mBet * mMult).toFixed(2) + ' TON'; }
         async function cashoutMines() {
             if (mOpened === 0) return tg.showAlert('Открой клетку!');
             const win = mBet * mMult;
             const res = await api('/api/mines/cashout', { id: userId, gameId: mGameId, winAmount: win });
             if (res.success) { tg.showAlert(`Забрано ${win.toFixed(2)} TON`); updateBal(balance + win); closeMines(); }
-                }
-            // --- 3. РУЛЕТКА (WHEEL) ---
+        }
+
+        // --- РУЛЕТКА ---
         let wDeg = 0;
         function openWheel() { document.getElementById('wheelModal').classList.add('active'); }
         async function spinWheel() {
@@ -369,30 +343,22 @@
             if (!bet || bet < 1) return tg.showAlert('Мин. ставка 1 TON');
             if (balance < bet) return tg.showAlert('Мало средств');
             const btn = document.getElementById('wheelBtn'); btn.disabled = true;
-            
             const res = await api('/api/wheel/spin', { id: userId, bet });
             updateBal(balance - bet);
-
-            // Крутим визуально (добавляем 5 полных оборотов + случайный угол)
             wDeg += 1800 + Math.floor(Math.random() * 360);
             document.getElementById('wheelObj').style.transform = `rotate(${wDeg}deg)`;
-
             setTimeout(() => {
                 btn.disabled = false;
                 if (res.success) { tg.showAlert(`Выигрыш x${res.winMult}!\nЗабрано ${res.win} TON`); updateBal(balance + res.win); }
                 else { tg.showAlert('Сектор 0. Вы проиграли.'); }
-            }, 4200); // Ждем анимацию
+            }, 4200);
         }
 
-        // --- 4. НАПЕРСТКИ (CUPS) ---
+        // --- НАПЕРСТКИ ---
         let cupsBetVal = 0;
         function openCups() { document.getElementById('cupsModal').classList.add('active'); resetCups(); }
         function closeCups() { closeModal('cupsModal'); checkSubscription(); }
-        function resetCups() {
-            document.getElementById('cupsControls').style.display = 'block';
-            document.getElementById('cupsPlay').style.display = 'none';
-            document.getElementById('cupsDisplay').innerText = '👀 🥤 🥤 🥤';
-        }
+        function resetCups() { document.getElementById('cupsControls').style.display = 'block'; document.getElementById('cupsPlay').style.display = 'none'; document.getElementById('cupsDisplay').innerText = '👀 🥤 🥤 🥤'; }
         function startCups() {
             cupsBetVal = parseFloat(document.getElementById('cupsBet').value);
             if (!cupsBetVal || cupsBetVal < 1) return tg.showAlert('Мин. ставка 1 TON');
@@ -405,17 +371,12 @@
             const res = await api('/api/cups/play', { id: userId, bet: cupsBetVal, choice });
             updateBal(balance - cupsBetVal);
             document.getElementById('cupsPlay').style.display = 'none';
-            
-            if (res.success) {
-                document.getElementById('cupsDisplay').innerText = `🎉 Под стаканом ${choice} был шарик! +${res.win} TON`;
-                updateBal(balance + res.win);
-            } else {
-                document.getElementById('cupsDisplay').innerText = `💀 Пусто! Шарик был под ${res.rightChoice}`;
-            }
+            if (res.success) { document.getElementById('cupsDisplay').innerText = `🎉 Под стаканом ${choice} был шарик! +${res.win} TON`; updateBal(balance + res.win); }
+            else { document.getElementById('cupsDisplay').innerText = `💀 Пусто! Шарик был под ${res.rightChoice}`; }
             setTimeout(closeCups, 3000);
         }
 
-        // --- 5. КРАН (CLAW) ---
+        // --- КРАН ---
         function openClaw() { document.getElementById('clawModal').classList.add('active'); document.getElementById('clawIcon').innerText = '🕹️'; }
         async function playClaw() {
             const bet = parseFloat(document.getElementById('clawBet').value);
@@ -423,39 +384,15 @@
             if (balance < bet) return tg.showAlert('Мало средств');
             const btn = document.getElementById('clawBtn'); btn.disabled = true;
             document.getElementById('clawIcon').innerText = '⬇️';
-            
             const res = await api('/api/claw/grab', { id: userId, bet });
             updateBal(balance - bet);
-
             setTimeout(() => {
                 btn.disabled = false;
-                if (res.success) {
-                    document.getElementById('clawIcon').innerText = '🧸';
-                    tg.showAlert(`Успех! Вы вытащили подарок. +${res.win} TON`);
-                    updateBal(balance + res.win);
-                } else {
-                    document.getElementById('clawIcon').innerText = '💨';
-                    tg.showAlert('Кран разжался! Вы промахнулись.');
-                }
+                if (res.success) { document.getElementById('clawIcon').innerText = '🧸'; tg.showAlert(`Успех! Вы вытащили подарок. +${res.win} TON`); updateBal(balance + res.win); }
+                else { document.getElementById('clawIcon').innerText = '💨'; tg.showAlert('Кран разжался! Вы промахнулись.'); }
             }, 1500);
         }
 
-        // --- 6. АПГРЕЙДЕР (UPGRADE) ---
-        function openUpgrade() { document.getElementById('upgradeModal').classList.add('active'); }
-
-   async function activatePromo() {
-    const code = document.getElementById('promo-code').value.trim();
-    if (!code) return;
-    const res = await api('/api/promo/activate', { id: userId, code });
-    if (res.error) {
-        tg.showAlert(res.error);
-    } else if (res.success) {
-        tg.showAlert(`✅ Промокод активирован! +${res.amount} TON`);
-        checkSubscription();
-        document.getElementById('promo-code').value = '';
-    }
-}
-         
         checkSubscription();
     </script>
 </body>
