@@ -17,8 +17,7 @@ const CHANNELS = ['@noplayhub', '@nosaler'];
 const ADMIN_ID = 8452970548; 
 
 const bot = new TelegramBot(BOT_TOKEN, { polling: true });
-const db = new sqlite3.Database('./db.sqlite');
-
+const db = new sqlite3.Database('./db_new.sqlite');
 // БАЗА ДАННЫХ
 db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS users (id TEXT PRIMARY KEY, balance REAL DEFAULT 0, ref_id TEXT, ref_earned REAL DEFAULT 0, last_free_spin INTEGER DEFAULT 0)`);
