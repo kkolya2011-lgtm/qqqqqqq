@@ -8,7 +8,7 @@
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <style>
         :root { 
-            --card: rgba(21, 26, 38, 0.7); 
+            --card: rgba(21, 26, 38, 0.6); 
             --accent: #1e3a8a; 
             --accent-glow: #3b82f6;
             --gold: #ffcc00; 
@@ -16,23 +16,85 @@
             --text-muted: #8a93a6; 
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; }
-        body { background: #000; color: var(--text); display: flex; flex-direction: column; height: 100vh; overflow: hidden; position: relative; }
-        
-        /* ВИДЕО-ФОН */
-        #bg-video {
-            position: fixed;
-            top: 50%; left: 50%;
-            min-width: 100%; min-height: 100%;
-            width: auto; height: auto;
-            transform: translate(-50%, -50%);
-            z-index: -2;
-            opacity: 0.6; 
+        body { 
+            background-color: #050810; 
+            color: var(--text); 
+            display: flex; 
+            flex-direction: column; 
+            height: 100vh; 
+            overflow: hidden; 
+            position: relative; 
         }
-        /* Затемнение поверх видео */
+        
+        /* АНИМИРОВАННЫЙ КОСМИЧЕСКИЙ ФОН */
+        .space-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -3;
+            background: #050810;
+            overflow: hidden;
+        }
+        
+        /* Плавающие туманности */
+        .nebula {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.4;
+            animation: float 20s infinite alternate ease-in-out;
+        }
+        .nebula-1 {
+            width: 300px; height: 300px;
+            background: #1e3a8a;
+            top: -50px; left: -50px;
+            animation-duration: 15s;
+        }
+        .nebula-2 {
+            width: 400px; height: 400px;
+            background: #3b82f6;
+            bottom: -100px; right: -100px;
+            animation-duration: 25s;
+            animation-delay: -5s;
+        }
+        .nebula-3 {
+            width: 250px; height: 250px;
+            background: #0f172a;
+            top: 40%; left: 30%;
+            animation-duration: 20s;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(50px, 30px) scale(1.1); }
+            100% { transform: translate(-30px, -50px) scale(0.9); }
+        }
+
+        /* Звезды */
+        .stars {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -2;
+            background-image: 
+                radial-gradient(1px 1px at 10% 20%, white, transparent),
+                radial-gradient(1px 1px at 40% 70%, white, transparent),
+                radial-gradient(2px 2px at 80% 40%, #3b82f6, transparent),
+                radial-gradient(1px 1px at 60% 10%, white, transparent),
+                radial-gradient(1px 1px at 30% 80%, #3b82f6, transparent),
+                radial-gradient(2px 2px at 90% 90%, white, transparent);
+            background-size: 300px 300px;
+            animation: twinkle 4s infinite alternate;
+        }
+        @keyframes twinkle {
+            0% { opacity: 0.4; }
+            100% { opacity: 0.9; }
+        }
+
+        /* Затемнение поверх фона (чтобы текст читался) */
         .overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(11, 14, 20, 0.6);
+            background: rgba(5, 8, 16, 0.5);
             z-index: -1;
         }
 
@@ -89,10 +151,13 @@
     </style>
 </head>
 <body>
-    <!-- ВИДЕО И ЗАТЕМНЕНИЕ -->
-    <video autoplay loop muted playsinline id="bg-video">
-        <source src="https://yourimageshare.com/ib/K8KlPFYYah.mp4" type="video/mp4">
-    </video>
+    <!-- ФОН -->
+    <div class="space-bg">
+        <div class="nebula nebula-1"></div>
+        <div class="nebula nebula-2"></div>
+        <div class="nebula nebula-3"></div>
+    </div>
+    <div class="stars"></div>
     <div class="overlay"></div>
 
     <header>
@@ -106,64 +171,27 @@
     <!-- ЭКРАН ИГР -->
     <div class="tab-content active" id="tab-games">
         <div class="games-grid">
-            <div class="game-card" onclick="playGame('rocket')">
-                <img src="https://i.ibb.co/d4CCjjxm/image.png" alt="Ракетка">
-                <h3>Ракетка</h3>
-            </div>
-            <div class="game-card" onclick="playGame('upgrade')">
-                <img src="https://i.ibb.co/qMy39d5G/image.png" alt="Апгрейдер">
-                <h3>Апгрейдер</h3>
-            </div>
-            <div class="game-card" onclick="playGame('wheel')">
-                <img src="https://i.ibb.co/bjqvWQPS/image.png" alt="Рулетка">
-                <h3>Рулетка</h3>
-            </div>
-            <div class="game-card" onclick="playGame('cups')">
-                <img src="https://i.ibb.co/qMNRD4rT/image.png" alt="Наперстки">
-                <h3>Наперстки</h3>
-            </div>
-            <div class="game-card" onclick="playGame('claw')">
-                <img src="https://i.ibb.co/HLwPtyTV/Telegram.png" alt="Кран">
-                <h3>Кран</h3>
-            </div>
-            <div class="game-card" onclick="playGame('mines')">
-                <img src="https://i.ibb.co/chkBP301/image.png" alt="Мины">
-                <h3>Мины</h3>
-            </div>
+            <div class="game-card" onclick="playGame('rocket')"><img src="https://i.ibb.co/d4CCjjxm/image.png"><h3>Ракетка</h3></div>
+            <div class="game-card" onclick="playGame('upgrade')"><img src="https://i.ibb.co/qMy39d5G/image.png"><h3>Апгрейдер</h3></div>
+            <div class="game-card" onclick="playGame('wheel')"><img src="https://i.ibb.co/bjqvWQPS/image.png"><h3>Рулетка</h3></div>
+            <div class="game-card" onclick="playGame('cups')"><img src="https://i.ibb.co/qMNRD4rT/image.png"><h3>Наперстки</h3></div>
+            <div class="game-card" onclick="playGame('claw')"><img src="https://i.ibb.co/HLwPtyTV/Telegram.png"><h3>Кран</h3></div>
+            <div class="game-card" onclick="playGame('mines')"><img src="https://i.ibb.co/chkBP301/image.png"><h3>Мины</h3></div>
         </div>
     </div>
 
     <!-- ЭКРАН ПРОФИЛЯ -->
     <div class="tab-content" id="tab-profile">
-        <div class="profile-box">
-            <h3>Статистика</h3>
-            <div class="stat-row"><span>Игр сыграно:</span> <span>0</span></div>
-            <div class="stat-row"><span>Всего выиграно:</span> <span>0.00 TON</span></div>
-        </div>
-        <div class="profile-box">
-            <h3>Реферальная система</h3>
-            <div class="stat-row"><span>Приглашено:</span> <span>0</span></div>
-            <div class="stat-row"><span>Заработано:</span> <span>0.00 TON</span></div>
-        </div>
-        <div class="profile-box">
-            <h3>Промокод</h3>
-            <div class="promo-input">
-                <input type="text" id="promo-code" placeholder="Введите код...">
-                <button onclick="activatePromo()">ВВОД</button>
-            </div>
-        </div>
+        <div class="profile-box"><h3>Статистика</h3><div class="stat-row"><span>Игр сыграно:</span> <span>0</span></div><div class="stat-row"><span>Всего выиграно:</span> <span>0.00 TON</span></div></div>
+        <div class="profile-box"><h3>Реферальная система</h3><div class="stat-row"><span>Приглашено:</span> <span>0</span></div><div class="stat-row"><span>Заработано:</span> <span>0.00 TON</span></div></div>
+        <div class="profile-box"><h3>Промокод</h3><div class="promo-input"><input type="text" id="promo-code" placeholder="Введите код..."><button onclick="activatePromo()">ВВОД</button></div></div>
     </div>
 
     <!-- МОДАЛКА ИНВЕНТАРЯ -->
     <div class="modal" id="invModal">
         <div class="modal-box">
-            <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px;">
-                <img src="https://i.ibb.co/SDZBmsnz/image.png" style="width: 40px; height: 40px; border-radius: 50%;">
-                <h3>Инвентарь</h3>
-            </div>
-            <div id="inv-list" style="text-align: center; color: #888; margin-bottom: 20px;">
-                Загрузка...
-            </div>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px;"><img src="https://i.ibb.co/SDZBmsnz/image.png" style="width: 40px; height: 40px; border-radius: 50%;"><h3>Инвентарь</h3></div>
+            <div id="inv-list" style="text-align: center; color: #888; margin-bottom: 20px;">Загрузка...</div>
             <button class="btn-close" onclick="closeModal('invModal')">ЗАКРЫТЬ</button>
         </div>
     </div>
@@ -177,74 +205,39 @@
         const API_URL = 'https://noplayapi.onrender.com'; 
         const tg = window.Telegram.WebApp; tg.expand();
         const userId = tg.initDataUnsafe?.user?.id || 'guest';
-        
         let balance = 0;
-        let inventory = [];
 
         async function api(path, body) {
-            try { 
-                const res = await fetch(API_URL + path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }); 
-                return await res.json(); 
-            } catch(e) { return null; }
+            try { const res = await fetch(API_URL + path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }); return await res.json(); } catch(e) { return null; }
         }
-
         async function init() {
             const res = await api('/api/login', { id: userId });
-            if (res) {
-                balance = res.balance;
-                document.getElementById('balance-amount').innerText = balance.toFixed(2);
-            }
+            if (res) { balance = res.balance; document.getElementById('balance-amount').innerText = balance.toFixed(2); }
         }
-
         function switchTab(name, el) { 
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active')); 
             document.getElementById('tab-' + name).classList.add('active'); 
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); 
-            el.classList.add('active'); 
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); el.classList.add('active'); 
         }
-
-        function playGame(game) {
-            tg.showAlert('Игра в разработке: ' + game);
-        }
-
+        function playGame(game) { tg.showAlert('Игра в разработке: ' + game); }
         async function openInventory() {
             document.getElementById('invModal').classList.add('active');
             document.getElementById('inv-list').innerHTML = 'Загрузка...';
             const res = await api('/api/inventory', { id: userId });
             if (res && res.length > 0) {
-                inventory = res;
                 document.getElementById('inv-list').innerHTML = res.map(item => `
                     <div class="inv-item">
                         <img src="${item.img}">
-                        <div style="flex: 1; text-align: left; padding-left: 10px;">
-                            <div style="font-size: 12px;">${item.name}</div>
-                            <div style="font-size: 10px; color: #888;">${item.value} TON</div>
-                        </div>
-                        <div class="inv-actions">
-                            <button class="btn-sell" onclick="sellItem(${item.id}, ${item.value})">ПРОДАТЬ</button>
-                            <button class="btn-withdraw" onclick="withdrawItem(${item.id})">ВЫВЕСТИ</button>
-                        </div>
-                    </div>
-                `).join('');
-            } else {
-                document.getElementById('inv-list').innerHTML = '<div style="color: #888; padding: 20px;">Инвентарь пуст</div>';
-            }
+                        <div style="flex: 1; text-align: left; padding-left: 10px;"><div style="font-size: 12px;">${item.name}</div><div style="font-size: 10px; color: #888;">${item.value} TON</div></div>
+                        <div class="inv-actions"><button class="btn-sell" onclick="sellItem(${item.id}, ${item.value})">ПРОДАТЬ</button><button class="btn-withdraw" onclick="withdrawItem(${item.id})">ВЫВЕСТИ</button></div>
+                    </div>`).join('');
+            } else { document.getElementById('inv-list').innerHTML = '<div style="color: #888; padding: 20px;">Инвентарь пуст</div>'; }
         }
-
-        async function sellItem(id, value) {
-            tg.showAlert(`Вы продали предмет за ${value} TON (в разработке)`);
-            closeModal('invModal');
-            init();
-        }
-
-        function withdrawItem(id) {
-            tg.showAlert('Заявка на вывод отправлена администратору!');
-        }
-
+        function sellItem(id, value) { tg.showAlert(`Вы продали предмет за ${value} TON (в разработке)`); closeModal('invModal'); init(); }
+        function withdrawItem(id) { tg.showAlert('Заявка на вывод отправлена администратору!'); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
         function openDeposit() { tg.showAlert('Пополнение скоро будет доступно!'); }
         function activatePromo() { tg.showAlert('Промокоды пока не работают.'); }
-
         init();
     </script>
 </body>
