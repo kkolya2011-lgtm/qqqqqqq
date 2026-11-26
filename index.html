@@ -8,7 +8,7 @@
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <style>
         :root { 
-            --card: rgba(21, 26, 38, 0.6); 
+            --card: rgba(21, 26, 38, 0.3); 
             --accent: #1e3a8a; 
             --accent-glow: #3b82f6;
             --gold: #ffcc00; 
@@ -16,87 +16,13 @@
             --text-muted: #8a93a6; 
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; }
-        body { 
-            background-color: #050810; 
-            color: var(--text); 
-            display: flex; 
-            flex-direction: column; 
-            height: 100vh; 
-            overflow: hidden; 
-            position: relative; 
-        }
+        body { background: #000; color: var(--text); display: flex; flex-direction: column; height: 100vh; overflow: hidden; position: relative; }
         
-        /* АНИМИРОВАННЫЙ КОСМИЧЕСКИЙ ФОН */
-        .space-bg {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -3;
-            background: #050810;
-            overflow: hidden;
+        #bg-video {
+            position: fixed; top: 50%; left: 50%; min-width: 100%; min-height: 100%; width: auto; height: auto;
+            transform: translate(-50%, -50%); z-index: -2; object-fit: cover; opacity: 0.7; 
         }
-        
-        /* Плавающие туманности */
-        .nebula {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(60px);
-            opacity: 0.4;
-            animation: float 20s infinite alternate ease-in-out;
-        }
-        .nebula-1 {
-            width: 300px; height: 300px;
-            background: #1e3a8a;
-            top: -50px; left: -50px;
-            animation-duration: 15s;
-        }
-        .nebula-2 {
-            width: 400px; height: 400px;
-            background: #3b82f6;
-            bottom: -100px; right: -100px;
-            animation-duration: 25s;
-            animation-delay: -5s;
-        }
-        .nebula-3 {
-            width: 250px; height: 250px;
-            background: #0f172a;
-            top: 40%; left: 30%;
-            animation-duration: 20s;
-            animation-delay: -10s;
-        }
-
-        @keyframes float {
-            0% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(50px, 30px) scale(1.1); }
-            100% { transform: translate(-30px, -50px) scale(0.9); }
-        }
-
-        /* Звезды */
-        .stars {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -2;
-            background-image: 
-                radial-gradient(1px 1px at 10% 20%, white, transparent),
-                radial-gradient(1px 1px at 40% 70%, white, transparent),
-                radial-gradient(2px 2px at 80% 40%, #3b82f6, transparent),
-                radial-gradient(1px 1px at 60% 10%, white, transparent),
-                radial-gradient(1px 1px at 30% 80%, #3b82f6, transparent),
-                radial-gradient(2px 2px at 90% 90%, white, transparent);
-            background-size: 300px 300px;
-            animation: twinkle 4s infinite alternate;
-        }
-        @keyframes twinkle {
-            0% { opacity: 0.4; }
-            100% { opacity: 0.9; }
-        }
-
-        /* Затемнение поверх фона (чтобы текст читался) */
-        .overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(5, 8, 16, 0.5);
-            z-index: -1;
-        }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5, 8, 16, 0.4); z-index: -1; }
 
         header { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; background: rgba(21, 26, 38, 0.85); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.05); z-index: 10; }
         .logo { font-weight: 900; font-size: 20px; letter-spacing: 1px; color: #fff; }
@@ -108,23 +34,13 @@
         .tab-content { display: none; flex: 1; padding: 15px; flex-direction: column; align-items: center; overflow-y: auto; padding-bottom: 90px; }
         .tab-content.active { display: flex; }
 
-        /* Сетка игр */
         .games-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 450px; }
-        .game-card { 
-            position: relative; border-radius: 16px; overflow: hidden; cursor: pointer; transition: 0.1s; 
-            aspect-ratio: 1 / 1; border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-        }
+        .game-card { position: relative; border-radius: 16px; overflow: hidden; cursor: pointer; transition: 0.1s; aspect-ratio: 1 / 1; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 20px rgba(0,0,0,0.5); backdrop-filter: blur(5px); }
         .game-card:active { transform: scale(0.96); border-color: var(--accent-glow); }
-        .game-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
-        .game-card h3 { 
-            position: absolute; bottom: 0; left: 0; right: 0; padding: 30px 10px 10px 10px;
-            font-size: 14px; font-weight: 900; text-transform: uppercase; text-align: center; color: #fff;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%); letter-spacing: 1px;
-        }
+        .game-card img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0.85; transition: opacity 0.2s; }
+        .game-card:active img { opacity: 1; }
+        .game-card h3 { position: absolute; bottom: 0; left: 0; right: 0; padding: 30px 10px 10px 10px; font-size: 14px; font-weight: 900; text-transform: uppercase; text-align: center; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.8); background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%); letter-spacing: 1px; }
 
-        /* Модалка Инвентаря */
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 100; opacity: 0; pointer-events: none; transition: 0.3s; }
         .modal.active { opacity: 1; pointer-events: all; }
         .modal-box { background: var(--card); backdrop-filter: blur(15px); width: 95%; max-width: 400px; border-radius: 20px; padding: 20px; text-align: center; border: 1px solid var(--accent-glow); max-height: 80vh; overflow-y: auto; }
@@ -135,29 +51,29 @@
         .btn-withdraw { background: var(--accent-glow); border: none; color: white; padding: 6px 10px; border-radius: 6px; font-weight: bold; font-size: 11px; cursor: pointer; }
         .btn-close { background: #444; border: none; color: white; padding: 12px; border-radius: 10px; width: 100%; margin-top: 10px; font-weight: bold; font-size: 14px; cursor: pointer; }
 
-        /* Профиль */
         .profile-box { width: 100%; max-width: 360px; background: var(--card); backdrop-filter: blur(10px); border-radius: 16px; padding: 20px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.05); }
         .profile-box h3 { margin-bottom: 15px; font-size: 14px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
         .stat-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; }
         .stat-row span:last-child { font-weight: bold; color: var(--gold); }
+        
+        /* Стили для реферальной ссылки */
+        .ref-link { display: flex; background: rgba(0,0,0,0.5); border-radius: 10px; padding: 10px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1); align-items: center; justify-content: space-between; gap: 8px; }
+        .ref-link span { font-size: 12px; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .copy-btn { background: var(--accent-glow); border: none; color: white; padding: 5px 10px; border-radius: 5px; font-size: 12px; cursor: pointer; white-space: nowrap; font-weight: bold;}
+
         .promo-input { display: flex; gap: 10px; margin-top: 10px; }
         .promo-input input { flex: 1; background: rgba(0,0,0,0.5); border: 1px solid #333; border-radius: 8px; padding: 10px; color: white; outline: none; }
         .promo-input button { background: var(--accent-glow); color: #fff; border: none; padding: 0 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
 
-        /* Нижнее меню */
         .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; height: 70px; background: rgba(21, 26, 38, 0.95); backdrop-filter: blur(10px); display: flex; border-top: 1px solid rgba(255,255,255,0.05); z-index: 50; }
         .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-muted); font-size: 12px; font-weight: 600; cursor: pointer; }
         .nav-item.active { color: var(--accent-glow); }
     </style>
 </head>
 <body>
-    <!-- ФОН -->
-    <div class="space-bg">
-        <div class="nebula nebula-1"></div>
-        <div class="nebula nebula-2"></div>
-        <div class="nebula nebula-3"></div>
-    </div>
-    <div class="stars"></div>
+    <video autoplay loop muted playsinline id="bg-video">
+        <source src="https://yourimageshare.com/ib/K8KlPFYYah.mp4" type="video/mp4">
+    </video>
     <div class="overlay"></div>
 
     <header>
@@ -168,7 +84,6 @@
         </div>
     </header>
 
-    <!-- ЭКРАН ИГР -->
     <div class="tab-content active" id="tab-games">
         <div class="games-grid">
             <div class="game-card" onclick="playGame('rocket')"><img src="https://i.ibb.co/d4CCjjxm/image.png"><h3>Ракетка</h3></div>
@@ -180,14 +95,31 @@
         </div>
     </div>
 
-    <!-- ЭКРАН ПРОФИЛЯ -->
     <div class="tab-content" id="tab-profile">
-        <div class="profile-box"><h3>Статистика</h3><div class="stat-row"><span>Игр сыграно:</span> <span>0</span></div><div class="stat-row"><span>Всего выиграно:</span> <span>0.00 TON</span></div></div>
-        <div class="profile-box"><h3>Реферальная система</h3><div class="stat-row"><span>Приглашено:</span> <span>0</span></div><div class="stat-row"><span>Заработано:</span> <span>0.00 TON</span></div></div>
-        <div class="profile-box"><h3>Промокод</h3><div class="promo-input"><input type="text" id="promo-code" placeholder="Введите код..."><button onclick="activatePromo()">ВВОД</button></div></div>
+        <div class="profile-box">
+            <h3>Статистика</h3>
+            <div class="stat-row"><span>Игр сыграно:</span> <span>0</span></div>
+            <div class="stat-row"><span>Всего выиграно:</span> <span>0.00 TON</span></div>
+        </div>
+        
+        <!-- БЛОК РЕФЕРАЛЬНОЙ СИСТЕМЫ -->
+        <div class="profile-box">
+            <h3>Реферальная система</h3>
+            <div class="stat-row"><span>Приглашено друзей:</span> <span id="ref-count">0</span></div>
+            <div class="stat-row"><span>Заработано с рефов:</span> <span id="ref-earned">0.00 TON</span></div>
+            <p style="font-size: 11px; color: var(--text-muted); margin-top: 10px; margin-bottom: 10px;">Приглашай друзей и получай 10% с каждого их пополнения!</p>
+            <div class="ref-link">
+                <span id="ref-link-text">Загрузка...</span>
+                <button class="copy-btn" onclick="copyRef()">КОПИРОВАТЬ</button>
+            </div>
+        </div>
+
+        <div class="profile-box">
+            <h3>Промокод</h3>
+            <div class="promo-input"><input type="text" id="promo-code" placeholder="Введите код..."><button onclick="activatePromo()">ВВОД</button></div>
+        </div>
     </div>
 
-    <!-- МОДАЛКА ИНВЕНТАРЯ -->
     <div class="modal" id="invModal">
         <div class="modal-box">
             <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px;"><img src="https://i.ibb.co/SDZBmsnz/image.png" style="width: 40px; height: 40px; border-radius: 50%;"><h3>Инвентарь</h3></div>
@@ -205,21 +137,44 @@
         const API_URL = 'https://noplayapi.onrender.com'; 
         const tg = window.Telegram.WebApp; tg.expand();
         const userId = tg.initDataUnsafe?.user?.id || 'guest';
+        
         let balance = 0;
+        let refEarned = 0;
 
         async function api(path, body) {
             try { const res = await fetch(API_URL + path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }); return await res.json(); } catch(e) { return null; }
         }
+
         async function init() {
+            // Генерируем реферальную ссылку
+            document.getElementById('ref-link-text').innerText = `t.me/noplayrobot?start=${userId}`;
+
             const res = await api('/api/login', { id: userId });
-            if (res) { balance = res.balance; document.getElementById('balance-amount').innerText = balance.toFixed(2); }
+            if (res) { 
+                balance = res.balance; 
+                refEarned = res.ref_earned || 0;
+                document.getElementById('balance-amount').innerText = balance.toFixed(2); 
+                document.getElementById('ref-earned').innerText = refEarned.toFixed(2) + ' TON';
+            }
         }
+
         function switchTab(name, el) { 
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active')); 
             document.getElementById('tab-' + name).classList.add('active'); 
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); el.classList.add('active'); 
         }
+
         function playGame(game) { tg.showAlert('Игра в разработке: ' + game); }
+
+        function copyRef() {
+            const text = document.getElementById('ref-link-text').innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                tg.showAlert('Ссылка скопирована!');
+            }).catch(() => {
+                tg.showAlert('Не удалось скопировать');
+            });
+        }
+
         async function openInventory() {
             document.getElementById('invModal').classList.add('active');
             document.getElementById('inv-list').innerHTML = 'Загрузка...';
@@ -238,6 +193,7 @@
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
         function openDeposit() { tg.showAlert('Пополнение скоро будет доступно!'); }
         function activatePromo() { tg.showAlert('Промокоды пока не работают.'); }
+
         init();
     </script>
 </body>
