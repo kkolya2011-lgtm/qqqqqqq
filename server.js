@@ -15,7 +15,7 @@ const CHANNELS = ['@noplayhub', '@nosaler'];
 const ADMIN_ID = 8452970548; 
 
 const bot = new TelegramBot(BOT_TOKEN, { polling: true });
-const db = new sqlite3.Database('./db_final.sqlite'); // НОВОЕ ИМЯ БАЗЫ
+const db = new sqlite3.Database('./db_final2.sqlite'); // НОВОЕ ИМЯ БАЗЫ (чтобы не было конфликтов)
 
 // Создание таблиц
 db.serialize(() => {
@@ -24,6 +24,7 @@ db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS inventory (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id TEXT, name TEXT, img TEXT, value REAL)`);
     db.run(`CREATE TABLE IF NOT EXISTS promos (code TEXT PRIMARY KEY, amount REAL, max_uses INTEGER, current_uses INTEGER DEFAULT 0)`);
     db.run(`CREATE TABLE IF NOT EXISTS user_promos (user_id TEXT, code TEXT)`);
+    db.run(`CREATE TABLE IF NOT EXISTS active_games (id TEXT PRIMARY KEY, user_id TEXT, game_type TEXT, bet REAL, data TEXT)`);
 });
 
 // --- АДМИН ПАНЕЛЬ ---
@@ -103,20 +104,29 @@ bot.onText(/\/start(?: (.+))?/, (msg, match) => {
 // --- API ДЛЯ САЙТА ---
 app.post('/api/login', async (req, res) => {
     const { id } = req.body;
+    
+    // Проверка подписки
     let isSubscribed = true;
     for (let channel of CHANNELS) {
         try {
             const member = await bot.getChatMember(channel, id);
-            if (member.status === 'left' || member.status === 'kicked') { isSubscribed = false; break; }
-        } catch(e) {} 
+            if (member.status === 'left' || member.status === 'kicked') { 
+                isSubscribed = false; 
+                break; 
+            }
+        } catch(e) {
+            // Если бот не админ в канале, он не сможет проверить. 
+            // Чтобы не блокировать всех, оставляем true (но лучше сделай бота админом).
+            console.log(`Ошибка проверки канала ${channel}:`, e.message); 
+        } 
     }
 
     db.get("SELECT * FROM users WHERE id = ?", [id], (err, row) => {
         if (!row) {
             db.run("INSERT OR IGNORE INTO users (id) VALUES (?)", [id]);
-            res.json({ balance: 0, isSubscribed, lastFreeSpin: 0 });
+            res.json({ balance: 0, isSubscribed, lastFreeSpin: 0, ref_earned: 0 });
         } else {
-            res.json({ balance: row.balance, isSubscribed, lastFreeSpin: row.last_free_spin });
+            res.json({ balance: row.balance, isSubscribed, lastFreeSpin: row.last_free_spin, ref_earned: row.ref_earned || 0 });
         }
     });
 });
@@ -125,7 +135,48 @@ app.post('/api/inventory', (req, res) => {
     db.all("SELECT * FROM inventory WHERE user_id = ?", [req.body.id], (err, rows) => res.json(rows || []));
 });
 
-// ЗАГЛУШКИ ДЛЯ СТАРЫХ ФУНКЦИЙ (чтобы не падало)
+// --- ЛОГИКА ИГР (РАКЕТКА) ---
+app.post('/api/crash/start', (req, res) => {
+    const { id, bet } = req.body;
+    if (!bet || bet <= 0) return res.json({ error: 'Неверная ставка' });
+
+    db.get("SELECT balance FROM users WHERE id = ?", [id], (err, row) => {
+        if (!row || row.balance < bet) return res.json({ error: 'Недостаточно средств' });
+        
+        db.run("UPDATE users SET balance = balance - ? WHERE id = ?", [bet, id]);
+
+        let crashPoint = 1.00;
+        const rand = Math.random();
+        if (rand < 0.65) crashPoint = 1.01 + Math.random() * 0.8; // 65% шанс краша на низких
+        else if (rand < 0.95) crashPoint = 1.8 + Math.random() * 1.5; // 30% шанс средних
+        else crashPoint = 3.0 + Math.random() * 7.0; // 5% шанс высоких
+
+        const gameId = Date.now().toString();
+        db.run("INSERT INTO active_games (id, user_id, game_type, bet, data) VALUES (?, ?, 'crash', ?, ?)", [gameId, id, bet, crashPoint.toString()]);
+
+        res.json({ success: true, gameId, crashPoint: parseFloat(crashPoint.toFixed(2)) });
+    });
+});
+
+app.post('/api/crash/cashout', (req, res) => {
+    const { id, gameId, multiplier, bet } = req.body;
+    
+    db.get("SELECT * FROM active_games WHERE id = ? AND user_id = ?", [gameId, id], (err, game) => {
+        if (!game) return res.json({ error: 'Игра не найдена' });
+        
+        const winAmount = bet * multiplier;
+        
+        if (multiplier <= parseFloat(game.data)) {
+            db.run("UPDATE users SET balance = balance + ? WHERE id = ?", [winAmount, id]);
+            db.run("DELETE FROM active_games WHERE id = ?", [gameId]);
+            res.json({ success: true, win: winAmount });
+        } else {
+            res.json({ success: false, error: 'Ракета уже взорвалась' });
+        }
+    });
+});
+
+// --- ЗАГЛУШКИ ДЛЯ ОСТАЛЬНЫХ ФУНКЦИЙ ---
 app.post('/api/promo/activate', (req, res) => res.json({ error: 'В разработке' }));
 app.post('/api/spin_free', (req, res) => res.json({ success: true }));
 app.post('/api/deposit/create', (req, res) => res.json({ comment: 'test', wallet: WALLET }));
