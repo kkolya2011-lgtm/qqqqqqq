@@ -11,11 +11,11 @@ app.use(express.json());
 const BOT_TOKEN = process.env.BOT_TOKEN || '8935072092:AAHZCPqMRF3KGL4nuHFhrZd3Uq1l-w-5PTU';
 const TON_API_KEY = process.env.TON_API_KEY || 'AFJIW3WC32MIRRQAAAAOWITJSJTVK6JPRXS27ZWIINW4HZK4VT6NITKDERBW62ZZ62ZW66Y';
 const WALLET = 'UQAUhd7_xqX1M8ybng3_6NEUH79tAZpHOa8Y6Agkzn9Z74U2'; 
-const CHANNELS = ['@noplayhub', '@nosaler']; 
+const CHANNELS = ['@noplayhub', '@nosalerchat']; 
 const ADMIN_ID = 8452970548; 
 
 const bot = new TelegramBot(BOT_TOKEN, { polling: true });
-const db = new sqlite3.Database('./db_final2.sqlite'); // НОВОЕ ИМЯ БАЗЫ (чтобы не было конфликтов)
+const db = new sqlite3.Database('./db_final3.sqlite'); // НОВОЕ ИМЯ БАЗЫ (чтобы не было конфликтов при обновлении)
 
 // Создание таблиц
 db.serialize(() => {
@@ -104,21 +104,12 @@ bot.onText(/\/start(?: (.+))?/, (msg, match) => {
 // --- API ДЛЯ САЙТА ---
 app.post('/api/login', async (req, res) => {
     const { id } = req.body;
-    
-    // Проверка подписки
     let isSubscribed = true;
     for (let channel of CHANNELS) {
         try {
             const member = await bot.getChatMember(channel, id);
-            if (member.status === 'left' || member.status === 'kicked') { 
-                isSubscribed = false; 
-                break; 
-            }
-        } catch(e) {
-            // Если бот не админ в канале, он не сможет проверить. 
-            // Чтобы не блокировать всех, оставляем true (но лучше сделай бота админом).
-            console.log(`Ошибка проверки канала ${channel}:`, e.message); 
-        } 
+            if (member.status === 'left' || member.status === 'kicked') { isSubscribed = false; break; }
+        } catch(e) {} 
     }
 
     db.get("SELECT * FROM users WHERE id = ?", [id], (err, row) => {
@@ -135,37 +126,76 @@ app.post('/api/inventory', (req, res) => {
     db.all("SELECT * FROM inventory WHERE user_id = ?", [req.body.id], (err, rows) => res.json(rows || []));
 });
 
-// --- ЛОГИКА ИГР (РАКЕТКА) ---
+// --- 1. ЛОГИКА МИН ---
+app.post('/api/mines/start', (req, res) => {
+    const { id, bet, mines } = req.body; 
+    if (!bet || bet <= 0) return res.json({ error: 'Неверная ставка' });
+    if (!mines || mines < 1 || mines > 24) return res.json({ error: 'Неверное кол-во мин' });
+    db.get("SELECT balance FROM users WHERE id = ?", [id], (err, row) => {
+        if (!row || row.balance < bet) return res.json({ error: 'Недостаточно средств' });
+        db.run("UPDATE users SET balance = balance - ? WHERE id = ?", [bet, id]);
+        let field = new Array(25).fill(false);
+        let placed = 0;
+        while (placed < mines) {
+            let pos = Math.floor(Math.random() * 25);
+            if (!field[pos]) { field[pos] = true; placed++; }
+        }
+        const gameId = Date.now().toString();
+        db.run("INSERT INTO active_games (id, user_id, game_type, bet, data) VALUES (?, ?, 'mines', ?, ?)", [gameId, id, bet, JSON.stringify(field)]);
+        res.json({ success: true, gameId, bet });
+    });
+});
+
+app.post('/api/mines/click', (req, res) => {
+    const { id, gameId, cellIndex, currentMultiplier } = req.body;
+    db.get("SELECT * FROM active_games WHERE id = ? AND user_id = ?", [gameId, id], (err, game) => {
+        if (!game) return res.json({ error: 'Игра не найдена' });
+        let field = JSON.parse(game.data);
+        let isMine = field[cellIndex];
+        // ПОДКРУТКА: шанс на мину вырастает, если кэшаут уже больше 1.5
+        if (!isMine && currentMultiplier > 1.5 && Math.random() < 0.4) isMine = true;
+        if (isMine) {
+            db.run("DELETE FROM active_games WHERE id = ?", [gameId]);
+            res.json({ success: false, isMine: true });
+        } else {
+            res.json({ success: true, isMine: false });
+        }
+    });
+});
+
+app.post('/api/mines/cashout', (req, res) => {
+    const { id, gameId, winAmount } = req.body;
+    db.get("SELECT * FROM active_games WHERE id = ? AND user_id = ?", [gameId, id], (err, game) => {
+        if (!game) return res.json({ error: 'Игра не найдена' });
+        db.run("UPDATE users SET balance = balance + ? WHERE id = ?", [winAmount, id]);
+        db.run("DELETE FROM active_games WHERE id = ?", [gameId]);
+        res.json({ success: true, win: winAmount });
+    });
+});
+
+// --- 2. ЛОГИКА РАКЕТКИ ---
 app.post('/api/crash/start', (req, res) => {
     const { id, bet } = req.body;
     if (!bet || bet <= 0) return res.json({ error: 'Неверная ставка' });
-
     db.get("SELECT balance FROM users WHERE id = ?", [id], (err, row) => {
         if (!row || row.balance < bet) return res.json({ error: 'Недостаточно средств' });
-        
         db.run("UPDATE users SET balance = balance - ? WHERE id = ?", [bet, id]);
-
         let crashPoint = 1.00;
         const rand = Math.random();
-        if (rand < 0.65) crashPoint = 1.01 + Math.random() * 0.8; // 65% шанс краша на низких
-        else if (rand < 0.95) crashPoint = 1.8 + Math.random() * 1.5; // 30% шанс средних
-        else crashPoint = 3.0 + Math.random() * 7.0; // 5% шанс высоких
-
+        if (rand < 0.65) crashPoint = 1.01 + Math.random() * 0.8; // 65% краш на x1.01-x1.81
+        else if (rand < 0.95) crashPoint = 1.8 + Math.random() * 1.5; // 30% краш на x1.8-x3.3
+        else crashPoint = 3.0 + Math.random() * 7.0; // 5% шанс на высокий полет
         const gameId = Date.now().toString();
         db.run("INSERT INTO active_games (id, user_id, game_type, bet, data) VALUES (?, ?, 'crash', ?, ?)", [gameId, id, bet, crashPoint.toString()]);
-
         res.json({ success: true, gameId, crashPoint: parseFloat(crashPoint.toFixed(2)) });
     });
 });
 
 app.post('/api/crash/cashout', (req, res) => {
     const { id, gameId, multiplier, bet } = req.body;
-    
     db.get("SELECT * FROM active_games WHERE id = ? AND user_id = ?", [gameId, id], (err, game) => {
         if (!game) return res.json({ error: 'Игра не найдена' });
-        
         const winAmount = bet * multiplier;
-        
         if (multiplier <= parseFloat(game.data)) {
             db.run("UPDATE users SET balance = balance + ? WHERE id = ?", [winAmount, id]);
             db.run("DELETE FROM active_games WHERE id = ?", [gameId]);
@@ -176,7 +206,136 @@ app.post('/api/crash/cashout', (req, res) => {
     });
 });
 
-// --- ЗАГЛУШКИ ДЛЯ ОСТАЛЬНЫХ ФУНКЦИЙ ---
+// --- 3. ЛОГИКА АПГРЕЙДЕРА ---
+app.post('/api/upgrade', (req, res) => {
+    const { id, itemId, targetMultiplier } = req.body;
+    db.get("SELECT * FROM inventory WHERE id = ? AND user_id = ?", [itemId, id], (err, item) => {
+        if (!item) return res.json({ error: 'Предмет не найден' });
+        const chance = ((1 / targetMultiplier) * 100) * 0.7; // Подкрутка -30% к шансу
+        const win = Math.random() * 100 <= chance;
+        db.run("DELETE FROM inventory WHERE id = ?", [itemId]);
+        if (win) {
+            const newValue = item.value * targetMultiplier;
+            db.run("INSERT INTO inventory (user_id, name, img, value) VALUES (?, ?, ?, ?)", [id, item.name + ' (x' + targetMultiplier + ')', item.img, newValue], function() {
+                res.json({ success: true, newItem: { id: this.lastID, name: item.name, img: item.img, value: newValue } });
+            });
+        } else {
+            res.json({ success: false });
+        }
+    });
+});
+
+// --- 4. ЛОГИКА КОЛЕСА (РУЛЕТКИ) ---
+app.post('/api/wheel/spin', (req, res) => {
+    const { id, bet } = req.body;
+    if (!bet || bet <= 0) return res.json({ error: 'Неверная ставка' });
+    db.get("SELECT balance FROM users WHERE id = ?", [id], (err, row) => {
+        if (!row || row.balance < bet) return res.json({ error: 'Недостаточно средств' });
+        db.run("UPDATE users SET balance = balance - ? WHERE id = ?", [bet, id]);
+        
+        // Подкрутка: визуально 8 секторов, реально выигрыш реже
+        const rand = Math.random() * 100;
+        let winMult = 0;
+        if (rand > 90) winMult = 3;       // 10% шанс
+        else if (rand > 70) winMult = 2;  // 20% шанс
+        else if (rand > 40) winMult = 1.5;// 30% шанс
+        else if (rand > 10) winMult = 1;  // 30% шанс (возврат)
+        else winMult = 0;                 // 10% шанс (всё сгорает)
+
+        if (winMult > 0) {
+            const winAmount = bet * winMult;
+            db.run("UPDATE users SET balance = balance + ? WHERE id = ?", [winAmount, id]);
+            res.json({ success: true, winMult, win: winAmount });
+        } else {
+            res.json({ success: false, winMult: 0, win: 0 });
+        }
+    });
+});
+
+// --- 5. ЛОГИКА НАПЕРСТКОВ ---
+app.post('/api/cups/play', (req, res) => {
+    const { id, bet, choice } = req.body; // choice от 1 до 3
+    if (!bet || bet <= 0) return res.json({ error: 'Неверная ставка' });
+    db.get("SELECT balance FROM users WHERE id = ?", [id], (err, row) => {
+        if (!row || row.balance < bet) return res.json({ error: 'Недостаточно средств' });
+        db.run("UPDATE users SET balance = balance - ? WHERE id = ?", [bet, id]);
+        
+        // Подкрутка: реальный шанс выигрыша 30% (хотя игрок думает, что 33%)
+        const isWin = Math.random() < 0.3;
+        const winAmount = bet * 2.5; // Выплата х2.5
+        
+        if (isWin) {
+            db.run("UPDATE users SET balance = balance + ? WHERE id = ?", [winAmount, id]);
+            res.json({ success: true, win: winAmount, rightChoice: choice });
+        } else {
+            // Если проигрыш, выбираем любой другой колпачок
+            let rightChoice = choice + 1;
+            if (rightChoice > 3) rightChoice = 1;
+            res.json({ success: false, win: 0, rightChoice: rightChoice });
+        }
+    });
+});
+
+// --- 6. ЛОГИКА КРАНА ---
+app.post('/api/claw/grab', (req, res) => {
+    const { id, bet } = req.body;
+    if (!bet || bet <= 0) return res.json({ error: 'Неверная ставка' });
+    db.get("SELECT balance FROM users WHERE id = ?", [id], (err, row) => {
+        if (!row || row.balance < bet) return res.json({ error: 'Недостаточно средств' });
+        db.run("UPDATE users SET balance = balance - ? WHERE id = ?", [bet, id]);
+        
+        // Подкрутка: 85% шанс, что кран разожмется
+        const isWin = Math.random() > 0.85; 
+        
+        if (isWin) {
+            const winAmount = bet * 2; // Выплата х2
+            db.run("UPDATE users SET balance = balance + ? WHERE id = ?", [winAmount, id]);
+            res.json({ success: true, win: winAmount });
+        } else {
+            res.json({ success: false, win: 0 });
+        }
+    });
+});
+
+// --- 7. ЛОГИКА СЛОТОВ ---
+app.post('/api/slots/spin', (req, res) => {
+    const { id, bet } = req.body;
+    if (!bet || bet < 5) return res.json({ error: 'Мин. ставка в слотах 5 TON' }); // Порог 5 TON
+    db.get("SELECT balance FROM users WHERE id = ?", [id], (err, row) => {
+        if (!row || row.balance < bet) return res.json({ error: 'Недостаточно средств' });
+        db.run("UPDATE users SET balance = balance - ? WHERE id = ?", [bet, id]);
+        
+        // Твоя математика понижения шансов от суммы
+        let winChance = 15;
+        if (bet >= 15) winChance = 2;
+        else if (bet >= 10) winChance = 5;
+        else if (bet >= 7) winChance = 7;
+        else if (bet >= 5) winChance = 10;
+
+        const isWin = Math.random() * 100 <= winChance;
+        const winAmount = bet * 5; // Выплата х5
+        
+        // Генерируем визуальные слоты (3 штуки)
+        const symbols = ['🍒', '🍋', '💎', '⭐', '🔔'];
+        let slot1 = symbols[Math.floor(Math.random() * symbols.length)];
+        let slot2 = symbols[Math.floor(Math.random() * symbols.length)];
+        let slot3 = symbols[Math.floor(Math.random() * symbols.length)];
+
+        if (isWin) {
+            // Делаем выигрышную комбинацию
+            slot2 = slot1; slot3 = slot1;
+            db.run("UPDATE users SET balance = balance + ? WHERE id = ?", [winAmount, id]);
+            res.json({ success: true, win: winAmount, slots: [slot1, slot2, slot3] });
+        } else {
+            // Делаем так, чтобы две картинки совпадали (эффект "почти выиграл")
+            if (Math.random() > 0.5) slot2 = slot1;
+            else slot3 = slot1;
+            res.json({ success: false, win: 0, slots: [slot1, slot2, slot3] });
+        }
+    });
+});
+
+// --- ЗАГЛУШКИ ---
 app.post('/api/promo/activate', (req, res) => res.json({ error: 'В разработке' }));
 app.post('/api/spin_free', (req, res) => res.json({ success: true }));
 app.post('/api/deposit/create', (req, res) => res.json({ comment: 'test', wallet: WALLET }));
