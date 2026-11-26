@@ -118,7 +118,18 @@
                 <button class="btn-main" style="width:auto; margin:0; padding:5px 10px; font-size:12px;" onclick="copyRef()">КОПИРОВАТЬ</button>
             </div>
         </div>
+
+         <div class="profile-box" style="width:100%; max-width:400px; background:var(--card); padding:20px; border-radius:16px;">
+            <h3>Промокод</h3>
+            <div style="display:flex; gap:10px;">
+                <input type="text" id="promo-code" placeholder="Введите код..." style="flex:1; padding:10px; border-radius:8px; background:#000; color:#fff; border:1px solid #333; outline:none;">
+                <button onclick="activatePromo()" style="background:var(--accent-glow); color:#fff; border:none; padding:0 15px; border-radius:8px; font-weight:bold; cursor:pointer;">ВВОД</button>
+            </div>
+        </div>
+        <!-- КОНЕЦ БЛОКА -->
+
     </div>
+    
        <!-- МОДАЛКА ИНВЕНТАРЯ -->
     <div class="modal" id="invModal"><div class="modal-box"><h2>Инвентарь</h2><div id="inv-list" style="color:#888; margin-bottom:20px;">Загрузка...</div><button class="btn-close" onclick="closeModal('invModal')">ЗАКРЫТЬ</button></div></div>
 
@@ -432,6 +443,19 @@
         // --- 6. АПГРЕЙДЕР (UPGRADE) ---
         function openUpgrade() { document.getElementById('upgradeModal').classList.add('active'); }
 
+   async function activatePromo() {
+    const code = document.getElementById('promo-code').value.trim();
+    if (!code) return;
+    const res = await api('/api/promo/activate', { id: userId, code });
+    if (res.error) {
+        tg.showAlert(res.error);
+    } else if (res.success) {
+        tg.showAlert(`✅ Промокод активирован! +${res.amount} TON`);
+        checkSubscription();
+        document.getElementById('promo-code').value = '';
+    }
+}
+         
         checkSubscription();
     </script>
 </body>
