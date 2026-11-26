@@ -3,215 +3,223 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NoPlay - Cases</title>
+    <title>nosaler</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <style>
-        :root { --bg: #0a0505; --card: #170d0d; --accent: #b30000; --accent-glow: #ff1a1a; --gold: #ffcc00; --green: #00ff88; --text: #fff; --text-muted: #8a7a7a; }
+        :root { 
+            --bg: #0b0e14; 
+            --card: #151a26; 
+            --accent: #1e3a8a; 
+            --accent-glow: #3b82f6;
+            --gold: #ffcc00; 
+            --text: #ffffff; 
+            --text-muted: #8a93a6; 
+        }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); color: var(--text); display: flex; flex-direction: column; min-height: 100vh; overflow: hidden; }
-        header { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; background: rgba(23,13,13,0.9); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.05); z-index: 10; }
-        .logo { font-weight: 900; font-size: 20px; letter-spacing: 1px; text-shadow: 0 0 10px var(--accent); }
-        .logo span { color: var(--accent); }
-        .header-right { display: flex; align-items: center; gap: 10px; }
-        .mode-toggle { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 10px; font-size: 10px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .mode-toggle.active { background: var(--accent); border-color: var(--accent-glow); box-shadow: 0 0 10px var(--accent); }
-        .balance { background: rgba(179,0,0,0.2); padding: 6px 12px; border-radius: 20px; font-weight: 700; display: flex; align-items: center; gap: 6px; border: 1px solid rgba(179,0,0,0.5); cursor: pointer; }
-        .balance img { width: 18px; height: 18px; }
-        .balance span { color: var(--gold); font-size: 16px; }
-        .cases-nav { display: flex; gap: 10px; padding: 15px 20px; overflow-x: auto; }
-        .case-tab { min-width: 100px; background: var(--card); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 10px; text-align: center; cursor: pointer; transition: 0.2s; flex-shrink: 0; }
-        .case-tab.active { border-color: var(--accent); box-shadow: 0 0 15px rgba(179,0,0,0.3); background: rgba(179,0,0,0.1); }
-        .case-tab img { width: 50px; height: 50px; object-fit: contain; margin-bottom: 5px; }
-        .case-tab h4 { font-size: 13px; margin-bottom: 3px; }
-        .case-tab p { font-size: 11px; color: var(--gold); font-weight: bold; }
-        main { flex: 1; overflow-y: auto; padding-bottom: 80px; display: flex; flex-direction: column; align-items: center; }
-        .roulette-area { width: 100%; display: flex; flex-direction: column; align-items: center; position: relative; margin-top: 10px; padding: 0 20px; }
-        .marker { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 4px; height: 110px; background: #fff; z-index: 5; border-radius: 4px; box-shadow: 0 0 15px #fff; }
-        .window { width: 100%; max-width: 360px; height: 110px; background: var(--card); border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); position: relative; display: flex; align-items: center; }
-        .track { display: flex; gap: 10px; padding: 0 10px; will-change: transform; }
-        .item { min-width: 70px; height: 90px; background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0) 100%); border-radius: 12px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; }
-        .item img { width: 50px; height: 50px; object-fit: contain; }
-        .btn { margin-top: 20px; background: linear-gradient(135deg, var(--accent), #660000); color: white; border: none; padding: 18px; width: 100%; max-width: 320px; border-radius: 16px; font-size: 18px; font-weight: 800; box-shadow: 0 10px 25px rgba(179,0,0,0.4); cursor: pointer; text-transform: uppercase; }
-        .btn:active { transform: scale(0.96); }
-        .btn:disabled { opacity: 0.6; filter: grayscale(1); pointer-events: none; }
-        .btn-demo { background: linear-gradient(135deg, #333, #111); box-shadow: none; font-size: 14px; padding: 10px; margin-top: 10px; }
-        .tab-content { display: none; width: 100%; padding: 20px; flex-direction: column; align-items: center; }
+        body { background: var(--bg); color: var(--text); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        
+        header { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; background: var(--card); border-bottom: 1px solid rgba(255,255,255,0.05); z-index: 10; }
+        .logo { font-weight: 900; font-size: 20px; letter-spacing: 1px; color: #fff; }
+        .logo span { color: var(--accent-glow); }
+        .header-right { display: flex; gap: 10px; align-items: center; }
+        .btn-inv { background: var(--accent); color: #fff; padding: 6px 12px; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; border: none; }
+        .balance { background: rgba(59,130,246,0.2); padding: 6px 12px; border-radius: 20px; font-weight: 700; border: 1px solid rgba(59,130,246,0.5); cursor: pointer; color: var(--gold); font-size: 14px; }
+
+        .tab-content { display: none; flex: 1; padding: 20px; flex-direction: column; align-items: center; overflow-y: auto; padding-bottom: 90px; }
         .tab-content.active { display: flex; }
+
+        /* Сетка игр */
+        .games-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; max-width: 400px; }
+        .game-card { background: var(--card); border-radius: 16px; padding: 15px 10px; text-align: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); transition: 0.1s; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .game-card:active { transform: scale(0.96); border-color: var(--accent-glow); }
+        .game-card img { width: 100px; height: 100px; object-fit: contain; margin-bottom: 10px; filter: drop-shadow(0 0 10px rgba(59,130,246,0.3)); }
+        .game-card h3 { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Модалка Инвентаря */
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); display: flex; justify-content: center; align-items: center; z-index: 100; opacity: 0; pointer-events: none; transition: 0.3s; }
+        .modal.active { opacity: 1; pointer-events: all; }
+        .modal-box { background: var(--card); width: 95%; max-width: 400px; border-radius: 20px; padding: 20px; text-align: center; border: 1px solid var(--accent-glow); max-height: 80vh; overflow-y: auto; }
+        .inv-item { display: flex; align-items: center; justify-content: space-between; background: #1a2233; padding: 10px; border-radius: 10px; margin-bottom: 10px; border: 1px solid #2a354d; }
+        .inv-item img { width: 40px; height: 40px; }
+        .inv-actions { display: flex; gap: 5px; }
+        .btn-sell { background: #10b981; border: none; color: white; padding: 6px 10px; border-radius: 6px; font-weight: bold; font-size: 11px; cursor: pointer; }
+        .btn-withdraw { background: var(--accent-glow); border: none; color: white; padding: 6px 10px; border-radius: 6px; font-weight: bold; font-size: 11px; cursor: pointer; }
+        .btn-close { background: #444; border: none; color: white; padding: 12px; border-radius: 10px; width: 100%; margin-top: 10px; font-weight: bold; font-size: 14px; cursor: pointer; }
+
+        /* Профиль */
         .profile-box { width: 100%; max-width: 360px; background: var(--card); border-radius: 16px; padding: 20px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.05); }
-        .profile-box h3 { margin-bottom: 15px; font-size: 16px; color: var(--text-muted); text-transform: uppercase; }
+        .profile-box h3 { margin-bottom: 15px; font-size: 14px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
         .stat-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; }
         .stat-row span:last-child { font-weight: bold; color: var(--gold); }
         .promo-input { display: flex; gap: 10px; margin-top: 10px; }
-        .promo-input input { flex: 1; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 10px; color: white; }
-        .promo-input button { background: var(--green); color: #000; border: none; padding: 0 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 100; opacity: 0; pointer-events: none; transition: 0.3s; }
-        .modal.active { opacity: 1; pointer-events: all; }
-        .modal-box { background: var(--card); width: 85%; max-width: 340px; border-radius: 24px; padding: 30px 20px; text-align: center; border: 1px solid var(--accent); transform: scale(0.9); transition: 0.3s; }
-        .modal.active .modal-box { transform: scale(1); }
-        .win-img { width: 100px; height: 100px; margin-bottom: 15px; animation: float 2s infinite alternate; }
-        @keyframes float { from { transform: translateY(0); } to { transform: translateY(-10px); } }
-        .win-title { color: var(--gold); font-size: 24px; font-weight: 900; margin-bottom: 10px; }
-        .win-text { font-size: 16px; margin-bottom: 25px; }
-        .deposit-input { width: 100%; padding: 15px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; color: white; font-size: 18px; text-align: center; margin-bottom: 15px; }
-        .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; height: 70px; background: rgba(23,13,13,0.95); display: flex; border-top: 1px solid rgba(179,0,0,0.3); z-index: 50; }
+        .promo-input input { flex: 1; background: #000; border: 1px solid #333; border-radius: 8px; padding: 10px; color: white; outline: none; }
+        .promo-input button { background: var(--accent-glow); color: #fff; border: none; padding: 0 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+
+        /* Нижнее меню */
+        .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; height: 70px; background: var(--card); display: flex; border-top: 1px solid rgba(255,255,255,0.05); z-index: 50; }
         .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-muted); font-size: 12px; font-weight: 600; cursor: pointer; }
         .nav-item.active { color: var(--accent-glow); }
     </style>
 </head>
 <body>
     <header>
-        <div class="logo">NO<span>PLAY</span></div>
+        <div class="logo">NO<span>SALER</span></div>
         <div class="header-right">
-            <div class="mode-toggle" id="mode-toggle" onclick="toggleMode()"><span id="mode-label">РЕАЛ</span></div>
-            <div class="balance" onclick="openDeposit()"><img src="https://i.ibb.co/ymgpGtpy/images.png"><span id="balance-amount">0.00</span></div>
+            <button class="btn-inv" onclick="openInventory()">ИНВЕНТАРЬ</button>
+            <div class="balance" onclick="openDeposit()"><span id="balance-amount">0.00</span> TON</div>
         </div>
     </header>
 
-    <div class="tab-content active" id="tab-cases" style="padding: 0;">
-        <div class="cases-nav">
-            <div class="case-tab active" onclick="selectCase('free', this)"><img src="https://telegifter.ru/wp-content/themes/gifts/assets/img/gifts/noupdate/Toy%20Bear.webp"><h4>Бесплатный</h4><p>0 TON</p></div>
-            <div class="case-tab" onclick="selectCase('t1', this)"><img src="https://telegifter.ru/wp-content/themes/gifts/assets/img/gifts/noupdate/Voodoo%20Doll.webp"><h4>Стартовый</h4><p>1 TON</p></div>
-            <div class="case-tab" onclick="selectCase('t10', this)"><img src="https://telegifter.ru/wp-content/themes/gifts/assets/img/gifts/noupdate/Lunar%20Snake.webp"><h4>Премиум</h4><p>10 TON</p></div>
+    <!-- ЭКРАН ИГР -->
+    <div class="tab-content active" id="tab-games">
+        <div class="games-grid">
+            <!-- Ракетка -->
+            <div class="game-card" onclick="playGame('rocket')">
+                <img src="https://i.ibb.co/d4CCjjxm/image.png" alt="Ракетка">
+                <h3>Ракетка</h3>
+            </div>
+            <!-- Апгрейдер -->
+            <div class="game-card" onclick="playGame('upgrade')">
+                <img src="https://i.ibb.co/qMy39d5G/image.png" alt="Апгрейдер">
+                <h3>Апгрейдер</h3>
+            </div>
+            <!-- Рулетка -->
+            <div class="game-card" onclick="playGame('wheel')">
+                <img src="https://i.ibb.co/bjqvWQPS/image.png" alt="Рулетка">
+                <h3>Рулетка</h3>
+            </div>
+            <!-- Наперстки -->
+            <div class="game-card" onclick="playGame('cups')">
+                <img src="https://i.ibb.co/qMNRD4rT/image.png" alt="Наперстки">
+                <h3>Наперстки</h3>
+            </div>
+            <!-- Кран -->
+            <div class="game-card" onclick="playGame('claw')">
+                <img src="https://i.ibb.co/HLwPtyTV/Telegram.png" alt="Кран">
+                <h3>Кран</h3>
+            </div>
+            <!-- Мины -->
+            <div class="game-card" onclick="playGame('mines')">
+                <img src="https://i.ibb.co/chkBP301/image.png" alt="Мины">
+                <h3>Мины</h3>
+            </div>
         </div>
-        <div class="roulette-area"><div class="marker"></div><div class="window"><div class="track" id="track"></div></div></div>
-        <button class="btn" id="spinBtn" onclick="spin()">Открыть за 0 TON</button>
-        <button class="btn btn-demo" onclick="spinDemo()">🎰 ПРОКРУТИТЬ ДЕМО</button>
     </div>
 
+    <!-- ЭКРАН ПРОФИЛЯ -->
     <div class="tab-content" id="tab-profile">
         <div class="profile-box">
+            <h3>Статистика</h3>
+            <div class="stat-row"><span>Игр сыграно:</span> <span>0</span></div>
+            <div class="stat-row"><span>Всего выиграно:</span> <span>0.00 TON</span></div>
+        </div>
+        <div class="profile-box">
             <h3>Реферальная система</h3>
-            <div class="stat-row"><span>Заработано:</span> <span id="ref-earned">0.00 TON</span></div>
-            <p style="font-size: 11px; color: var(--text-muted); margin-top: 10px;">10% с пополнений друзей.</p>
+            <div class="stat-row"><span>Приглашено:</span> <span>0</span></div>
+            <div class="stat-row"><span>Заработано:</span> <span>0.00 TON</span></div>
         </div>
         <div class="profile-box">
             <h3>Промокод</h3>
-            <div class="promo-input"><input type="text" id="promo-code" placeholder="Код..."><button onclick="activatePromo()">АКТИВИРОВАТЬ</button></div>
+            <div class="promo-input">
+                <input type="text" id="promo-code" placeholder="Введите код...">
+                <button onclick="activatePromo()">ВВОД</button>
+            </div>
         </div>
     </div>
 
-    <div class="modal" id="winModal"><div class="modal-box">
-        <img id="winImg" class="win-img" src=""><h2 class="win-title">ПОБЕДА!</h2><p class="win-text" id="winText"></p>
-        <button class="btn" onclick="closeModal('winModal')">ЗАБРАТЬ</button>
-    </div></div>
-
-    <div class="modal" id="depositModal"><div class="modal-box" style="border-color: var(--gold);">
-        <h2 class="win-title" style="font-size: 20px;">ПОПОЛНЕНИЕ</h2>
-        <input type="number" class="deposit-input" id="deposit-amount" placeholder="Сумма в TON" min="1">
-        <button class="btn" onclick="closeModal('depositModal')">ОТМЕНА</button>
-        <button class="btn" style="margin-top: 10px; background: var(--gold); color: #000;" onclick="payDeposit()">ОПЛАТИТЬ</button>
-    </div></div>
+    <!-- МОДАЛКА ИНВЕНТАРЯ -->
+    <div class="modal" id="invModal">
+        <div class="modal-box">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px;">
+                <img src="https://i.ibb.co/SDZBmsnz/image.png" style="width: 40px; height: 40px;">
+                <h3>Инвентарь</h3>
+            </div>
+            <div id="inv-list" style="text-align: center; color: #888; margin-bottom: 20px;">
+                Загрузка...
+            </div>
+            <button class="btn-close" onclick="closeModal('invModal')">ЗАКРЫТЬ</button>
+        </div>
+    </div>
 
     <nav class="nav-bar">
-        <div class="nav-item active" onclick="switchTab('cases', this)">🎁 Кейсы</div>
-        <div class="nav-item" onclick="switchTab('profile', this)">👤 Профиль</div>
+        <div class="nav-item active" onclick="switchTab('games', this)">ИГРЫ</div>
+        <div class="nav-item" onclick="switchTab('profile', this)">ПРОФИЛЬ</div>
     </nav>
 
     <script>
         const API_URL = 'https://noplayapi.onrender.com'; 
-        const APP_URL = 'https://kkolya2011-lgtm.github.io/qqqqqqq/';
-
-        const tg = window.Telegram.WebApp; tg.expand(); tg.setHeaderColor('#0a0505'); tg.setBackgroundColor('#0a0505');
-        const userId = tg.initDataUnsafe?.user?.id || 'guest_' + Math.floor(Math.random()*10000);
+        const tg = window.Telegram.WebApp; tg.expand();
+        const userId = tg.initDataUnsafe?.user?.id || 'guest';
         
-        let balance = 0, refEarned = 0, isDemoMode = false, currentCase = 'free', isSpinning = false;
-        let tonConnectUI;
-
-        try {
-            tonConnectUI = new TON_CONNECT_UI.TonConnectUI({ manifestUrl: APP_URL + 'tonconnect-manifest.json' });
-        } catch(e) { console.log('TON Connect error', e); }
-
-        const IMG_TON = 'https://i.ibb.co/ymgpGtpy/images.png', IMG_HEART = 'https://i.ibb.co/0VjDScPB/cz-M6-Ly9wb-GF5-ZXJvay8va-W1h-Z2-Vz-Lz-Fm-MWQ5-NDM2-LTM3-MWIt-Nm-Fi-MC0x-Yj-A3-LTIz-NDI5-Yj-Uz-MTU5-OS5qc-Gc.jpg', IMG_CLOWN = 'https://telegifter.ru/wp-content/themes/gifts/assets/img/gifts/noupdate/Clown%20Bear.webp';
-        const db = {
-            free: [{ n: '0.01 TON', i: IMG_TON, w: 50 }, { n: '0.04 TON', i: IMG_TON, w: 25 }, { n: '0.1 TON', i: IMG_TON, w: 15 }, { n: 'Мишка', i: IMG_CLOWN, w: 5 }, { n: 'Сердечко', i: IMG_HEART, w: 5 }],
-            t1: [{ n: 'Сердечко', i: IMG_HEART, w: 25 }, { n: 'Мишка', i: IMG_CLOWN, w: 25 }, { n: '0.25 TON', i: IMG_TON, w: 15 }, { n: '0.5 TON', i: IMG_TON, w: 10 }, { n: 'Diamond Ring', i: 'https://telegifter.ru/wp-content/themes/gifts/assets/img/gifts/noupdate/Diamond%20Ring.webp', w: 0.05 }],
-            t10: [{ n: 'Toy Bear', i: 'https://telegifter.ru/wp-content/themes/gifts/assets/img/gifts/noupdate/Toy%20Bear.webp', w: 2.5 }, { n: 'Lol Pop', i: 'https://telegifter.ru/wp-content/themes/gifts/assets/img/gifts/noupdate/Lol%20Pop.webp', w: 10 }, { n: 'Easter Egg', i: 'https://telegifter.ru/wp-content/themes/gifts/assets/img/gifts/noupdate/Easter%20Egg.webp', w: 10 }, { n: 'Bear 15★', i: IMG_CLOWN, w: 17.5 }, { n: 'Heart 15★', i: IMG_HEART, w: 15.5 }]
-        };
-        const prices = { free: 0, t1: 1, t10: 10 };
+        let balance = 0;
+        let inventory = [];
 
         async function api(path, body) {
-            try {
-                const res = await fetch(API_URL + path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-                return await res.json();
+            try { 
+                const res = await fetch(API_URL + path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }); 
+                return await res.json(); 
             } catch(e) { return null; }
         }
 
         async function init() {
             const res = await api('/api/login', { id: userId });
-            if (res) { balance = res.balance; refEarned = res.ref_earned; updateUI(); }
-            fillTrack(db[currentCase]);
+            if (res) {
+                balance = res.balance;
+                document.getElementById('balance-amount').innerText = balance.toFixed(2);
+            }
         }
 
-        function updateUI() {
-            document.getElementById('balance-amount').innerText = balance.toFixed(2);
-            document.getElementById('ref-earned').innerText = refEarned.toFixed(2) + ' TON';
+        function switchTab(name, el) { 
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active')); 
+            document.getElementById('tab-' + name).classList.add('active'); 
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); 
+            el.classList.add('active'); 
         }
 
-        function getRandomGift(arr) { let total = arr.reduce((s, g) => s + g.w, 0), r = Math.random() * total; for (let g of arr) { if (r < g.w) return g; r -= g.w; } return arr[0]; }
-        function fillTrack(arr) { let h = ''; for (let i = 0; i < 40; i++) { let g = arr[Math.floor(Math.random() * arr.length)]; h += `<div class="item"><img src="${g.i}"></div>`; } document.getElementById('track').innerHTML = h; }
-        
-        function selectCase(id, el) {
-            if (isSpinning) return;
-            currentCase = id; document.querySelectorAll('.case-tab').forEach(t => t.classList.remove('active')); el.classList.add('active');
-            document.getElementById('spinBtn').innerText = `Открыть за ${prices[id]} TON`; fillTrack(db[id]);
+        function playGame(game) {
+            // Заглушка для игр. В будущем тут будет открытие самой игры.
+            tg.showAlert('Игра в разработке: ' + game);
         }
 
-        function spin() {
-            if (isSpinning || (!isDemoMode && balance < prices[currentCase])) { if(!isDemoMode) tg.showAlert('Мало средств!'); return; }
-            isSpinning = true; document.getElementById('spinBtn').disabled = true;
-            if (!isDemoMode && prices[currentCase] > 0) { balance -= prices[currentCase]; updateUI(); }
-            
-            const arr = isDemoMode ? db[currentCase].map(g => { if(g.n.includes('Ring')) g.w=20; return g; }) : db[currentCase];
-            const winner = getRandomGift(arr), WIN_POS = 35;
-            let items = []; for (let i = 0; i < 45; i++) items.push(i === WIN_POS ? winner : arr[Math.floor(Math.random() * arr.length)]);
-            document.getElementById('track').innerHTML = items.map(g => `<div class="item"><img src="${g.i}"></div>`).join('');
-            const track = document.getElementById('track'); track.style.transition = 'none'; track.style.transform = 'translateX(0)'; void track.offsetWidth;
-            
-            const ITEM_STEP = 80, targetX = -(10 + WIN_POS * ITEM_STEP + 35 - document.querySelector('.window').offsetWidth / 2 + (Math.random()-0.5)*40);
-            track.style.transition = 'transform 5s cubic-bezier(0.15, 0.9, 0.25, 1)'; track.style.transform = `translateX(${targetX}px)`;
-
-            setTimeout(() => {
-                isSpinning = false; document.getElementById('spinBtn').disabled = false;
-                if (!isDemoMode && winner.n.includes('TON')) { balance += parseFloat(winner.n); updateUI(); }
-                document.getElementById('winImg').src = winner.i; document.getElementById('winText').innerText = winner.n;
-                document.getElementById('winModal').classList.add('active');
-            }, 5200);
+        async function openInventory() {
+            document.getElementById('invModal').classList.add('active');
+            document.getElementById('inv-list').innerHTML = 'Загрузка...';
+            const res = await api('/api/inventory', { id: userId });
+            if (res && res.length > 0) {
+                inventory = res;
+                document.getElementById('inv-list').innerHTML = res.map(item => `
+                    <div class="inv-item">
+                        <img src="${item.img}">
+                        <div style="flex: 1; text-align: left; padding-left: 10px;">
+                            <div style="font-size: 12px;">${item.name}</div>
+                            <div style="font-size: 10px; color: #888;">${item.value} TON</div>
+                        </div>
+                        <div class="inv-actions">
+                            <button class="btn-sell" onclick="sellItem(${item.id}, ${item.value})">ПРОДАТЬ</button>
+                            <button class="btn-withdraw" onclick="withdrawItem(${item.id})">ВЫВЕСТИ</button>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                document.getElementById('inv-list').innerHTML = '<div style="color: #888; padding: 20px;">Инвентарь пуст</div>';
+            }
         }
 
-        function spinDemo() { if (isSpinning) return; isDemoMode = true; document.getElementById('mode-label').innerText = 'ДЕМО'; document.getElementById('mode-toggle').classList.add('active'); spin(); }
-        function toggleMode() { if (isSpinning) return; isDemoMode = !isDemoMode; document.getElementById('mode-label').innerText = isDemoMode ? 'ДЕМО' : 'РЕАЛ'; document.getElementById('mode-toggle').classList.toggle('active', isDemoMode); }
-        function closeModal(id) { document.getElementById(id).classList.remove('active'); if(id==='winModal' && isDemoMode) toggleMode(); }
-        function openDeposit() { document.getElementById('depositModal').classList.add('active'); }
-
-        async function payDeposit() {
-            const amount = parseFloat(document.getElementById('deposit-amount').value);
-            if (!amount || amount < 1) { tg.showAlert('Минимум 1 TON'); return; }
-            if (!tonConnectUI) { tg.showAlert('Ошибка TON Connect'); return; }
-            closeModal('depositModal');
-            
-            const res = await api('/api/deposit/create', { id: userId, amount });
-            if (!res || !res.comment) { tg.showAlert('Ошибка сервера'); return; }
-
-            try {
-                const tx = { validUntil: Math.floor(Date.now() / 1000) + 600, messages: [{ address: res.wallet, amount: (amount * 1e9).toString(), payload: btoa(res.comment) }] };
-                await tonConnectUI.sendTransaction(tx);
-                tg.showAlert('Транзакция отправлена! Ждем подтверждения...');
-                
-                let checks = 0;
-                const interval = setInterval(async () => {
-                    checks++;
-                    const check = await api('/api/deposit/check', { comment: res.comment });
-                    if (check && check.status === 'paid') { clearInterval(interval); tg.showAlert('✅ Баланс пополнен!'); init(); }
-                    else if (checks > 24) { clearInterval(interval); tg.showAlert('Долго нет ответа. Проверьте позже.'); }
-                }, 5000);
-
-            } catch(e) { tg.showAlert('Отменено или ошибка'); }
+        async function sellItem(id, value) {
+            tg.showAlert(`Вы продали предмет за ${value} TON (в разработке)`);
+            closeModal('invModal');
+            init();
         }
 
-        function activatePromo() { tg.showAlert('Промокоды временно отключены'); }
-        function switchTab(name, el) { document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active')); document.getElementById('tab-' + name).classList.add('active'); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); el.classList.add('active'); }
-        
+        function withdrawItem(id) {
+            tg.showAlert('Заявка на вывод отправлена администратору!');
+        }
+
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        function openDeposit() { tg.showAlert('Пополнение скоро будет доступно!'); }
+        function activatePromo() { tg.showAlert('Промокоды пока не работают.'); }
+
         init();
     </script>
 </body>
