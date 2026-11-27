@@ -68,9 +68,15 @@
         .sub-btn { display: block; width: 100%; max-width: 300px; padding: 15px; background: var(--accent-glow); color: #fff; text-decoration: none; border-radius: 10px; font-weight: bold; margin-bottom: 10px; }
         
         .upg-slots { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.5); padding: 15px; border-radius: 16px; margin-bottom: 15px; border: 1px solid #333;}
-        .upg-slot { width: 80px; height: 80px; background: #111; border-radius: 10px; display: flex; align-items: center; justify-content: center; border: 2px dashed #444; cursor: pointer; font-size: 10px;}
+        .upg-slot { width: 80px; height: 80px; background: #111; border-radius: 10px; display: flex; align-items: center; justify-content: center; border: 2px dashed #444; cursor: pointer; font-size: 10px; color: #888;}
         .upg-slot img { width: 60px; height: 60px; object-fit: contain;}
         .upg-arrow { font-size: 24px; color: var(--accent-glow); }
+        
+        /* КЕЙСЫ */
+        .case-track { display: flex; gap: 10px; overflow: hidden; width: 100%; padding: 10px; background: #000; border-radius: 10px; margin-bottom: 20px; position: relative; }
+        .case-item { min-width: 80px; height: 80px; background: #222; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+        .case-item img { width: 60px; height: 60px; object-fit: contain; }
+        .case-marker { position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: red; z-index: 10; transform: translateX(-50%); }
     </style>
 </head>
 <body>
@@ -97,17 +103,30 @@
             <a href="https://t.me/noplayhub" target="_blank" class="banner"><div class="banner-icon"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></div><div class="banner-text"><h4>Наш канал</h4><p>Розыгрыши и новости</p></div><div class="banner-btn">ПЕРЕЙТИ</div></a>
             <a href="https://t.me/nosalerchat" target="_blank" class="banner"><div class="banner-icon" style="background:#10b981;"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></div><div class="banner-text"><h4>Наш чат</h4><p>Общение</p></div><div class="banner-btn">ПЕРЕЙТИ</div></a>
         </div>
+        
         <div class="games-grid">
-            <div class="game-card" onclick="playGame('case_free')"><img src="https://i.ibb.co/CK8ZGBbs/399-20261127011759.png"><h3>Фри Кейс</h3></div>
-            <div class="game-card" onclick="playGame('case_1')"><img src="https://i.ibb.co/RGCPyCx2/400-20261127011851.png"><h3>Кейс 1 TON</h3></div>
-            <div class="game-card" onclick="playGame('case_10')"><img src="https://i.ibb.co/Y7NPRTvg/401-20261127011527.png"><h3>Кейс 10 TON</h3></div>
+            <!-- 1. Кейсы -->
+            <div class="game-card" onclick="openCase('free', 0)"><img src="https://i.ibb.co/CK8ZGBbs/399-20261127011759.png"><h3>Фри Кейс</h3></div>
+            <div class="game-card" onclick="openCase('case1', 1)"><img src="https://i.ibb.co/RGCPyCx2/400-20261127011851.png"><h3>Кейс 1 TON</h3></div>
+            <div class="game-card" onclick="openCase('case10', 10)"><img src="https://i.ibb.co/Y7NPRTvg/401-20261127011527.png"><h3>Кейс 10 TON</h3></div>
             
-            <div class="game-card" onclick="openUpgrade()"><img src="https://i.ibb.co/qMy39d5G/image.png"><h3>Апгрейдер</h3></div>
-            <div class="game-card" onclick="openCrash()"><img src="https://i.ibb.co/d4CCjjxm/image.png"><h3>Ракетка</h3></div>
-            <div class="game-card" onclick="openWheel()"><img src="https://i.ibb.co/bjqvWQPS/image.png"><h3>Рулетка</h3></div>
-            <div class="game-card" onclick="openCups()"><img src="https://i.ibb.co/qMNRD4rT/image.png"><h3>Наперстки</h3></div>
-            <div class="game-card" onclick="openClaw()"><img src="https://i.ibb.co/HLwPtyTV/Telegram.png"><h3>Кран</h3></div>
+            <!-- 2. Минки -->
             <div class="game-card" onclick="openMines()"><img src="https://i.ibb.co/chkBP301/image.png"><h3>Мины</h3></div>
+            
+            <!-- 3. Ракетка -->
+            <div class="game-card" onclick="openCrash()"><img src="https://i.ibb.co/d4CCjjxm/image.png"><h3>Ракетка</h3></div>
+            
+            <!-- 4. Апгрейдер -->
+            <div class="game-card" onclick="openUpgrade()"><img src="https://i.ibb.co/qMy39d5G/image.png"><h3>Апгрейдер</h3></div>
+            
+            <!-- 5. Кран -->
+            <div class="game-card" onclick="openClaw()"><img src="https://i.ibb.co/HLwPtyTV/Telegram.png"><h3>Кран</h3></div>
+            
+            <!-- 6. Наперстки -->
+            <div class="game-card" onclick="openCups()"><img src="https://i.ibb.co/qMNRD4rT/image.png"><h3>Наперстки</h3></div>
+            
+            <!-- 7. Рулетка -->
+            <div class="game-card" onclick="openWheel()"><img src="https://i.ibb.co/bjqvWQPS/image.png"><h3>Рулетка</h3></div>
         </div>
     </div>
 
@@ -129,6 +148,14 @@
             </div>
         </div>
     </div>
+
+    <!-- МОДАЛКА КЕЙСОВ -->
+    <div class="modal" id="caseModal"><div class="modal-box">
+        <h2 id="caseTitle">КЕЙС</h2>
+        <div class="case-track" id="caseTrack"><div class="case-marker"></div></div>
+        <button class="btn-main" id="caseBtn" onclick="spinCase()">ОТКРЫТЬ</button>
+        <button class="btn-close" onclick="closeCase()">ЗАКРЫТЬ</button>
+    </div></div>
 
     <div class="modal" id="invModal"><div class="modal-box"><h2>Инвентарь</h2><div id="inv-list" style="color:#888; margin-bottom:20px;">Загрузка...</div><button class="btn-close" onclick="closeModal('invModal')">ЗАКРЫТЬ</button></div></div>
 
@@ -198,6 +225,16 @@
                 document.getElementById('ref-earned').innerText = (res.ref_earned || 0).toFixed(2) + ' TON';
             } else {
                 document.getElementById('sub-block').style.display = 'flex';
+                   async function checkSubscription() {
+            const res = await api('/api/login', { id: userId });
+            if (res && res.isSubscribed === true) {
+                document.getElementById('sub-block').style.display = 'none';
+                document.getElementById('ref-link-text').innerText = `t.me/noplayrobot?start=${userId}`;
+                balance = res.balance; 
+                document.getElementById('balance-amount').innerText = balance.toFixed(2); 
+                document.getElementById('ref-earned').innerText = (res.ref_earned || 0).toFixed(2) + ' TON';
+            } else {
+                document.getElementById('sub-block').style.display = 'flex';
                 if (res && res.isSubscribed === false) tg.showAlert('Вы подписались не на всё!');
             }
         }
@@ -206,8 +243,65 @@
         function switchTab(name, el) { document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active')); document.getElementById('tab-' + name).classList.add('active'); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); el.classList.add('active'); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
         function copyRef() { navigator.clipboard.writeText(document.getElementById('ref-link-text').innerText).then(() => tg.showAlert('Скопировано!')); }
-        function playGame(game) { tg.showAlert('Игра в разработке: ' + game); }
         function openDeposit() { document.getElementById('depositModal').classList.add('active'); }
+
+        // --- КЕЙСЫ ---
+        let currentCaseType = '', currentCasePrice = 0, isSpinningCase = false;
+        const caseData = {
+            free: [{img: 'https://s6.iimage.su/s/26/gXFGm2lxPtthQRd6mrbESJy1ymjYjeMKQqYzE8gfe.jpg', name: '0.01 TON'}, {img: 'https://s6.iimage.su/s/26/g4ef9m9xzFMsk0SNJwmATk8FfKfQ0wDzjGvbIp16d.webp', name: 'Сердечко'}],
+            case1: [{img: 'https://s6.iimage.su/s/26/g4ef9m9xzFMsk0SNJwmATk8FfKfQ0wDzjGvbIp16d.webp', name: 'Сердечко'}, {img: 'https://i.ibb.co/HLwPtyTV/Telegram.png', name: 'Мишка'}],
+            case10: [{img: 'https://telegifter.ru/wp-content/themes/gifts/assets/img/gifts/noupdate/Toy%20Bear.webp', name: 'Toy Bear'}, {img: 'https://telegifter.ru/wp-content/themes/gifts/assets/img/gifts/noupdate/Top%20Hat.webp', name: 'Top Hat'}]
+        };
+
+        function openCase(type, price) {
+            if (isSpinningCase) return;
+            if (balance < price) return tg.showAlert('Мало средств!');
+            currentCaseType = type; currentCasePrice = price;
+            document.getElementById('caseModal').classList.add('active');
+            document.getElementById('caseBtn').innerText = `ОТКРЫТЬ ЗА ${price} TON`;
+            document.getElementById('caseTrack').innerHTML = '<div class="case-marker"></div>';
+        }
+
+        function closeCase() { if(isSpinningCase) return; closeModal('caseModal'); checkSubscription(); }
+
+        async function spinCase() {
+            if (isSpinningCase) return;
+            if (balance < currentCasePrice) return tg.showAlert('Мало средств!');
+            
+            isSpinningCase = true;
+            const btn = document.getElementById('caseBtn'); btn.disabled = true;
+            const track = document.getElementById('caseTrack');
+            
+            // Визуальный спин
+            let items = caseData[currentCaseType];
+            let html = '<div class="case-marker"></div>';
+            for(let i=0; i<30; i++) {
+                let item = items[Math.floor(Math.random() * items.length)];
+                html += `<div class="case-item"><img src="${item.img}"></div>`;
+            }
+            track.innerHTML = html;
+            
+            // Отправляем на сервер
+            const res = await api('/api/case/open', { id: userId, caseType: currentCaseType, price: currentCasePrice });
+            
+            if (res.error) {
+                isSpinningCase = false; btn.disabled = false;
+                return tg.showAlert(res.error);
+            }
+
+            updateBal(balance - currentCasePrice + (res.gift.value || 0)); // Если выпал тон - вернули
+            
+            // Анимация прокрутки
+            track.style.transition = 'transform 3s ease-out';
+            track.style.transform = 'translateX(-500px)'; // Условно останавливаем
+
+            setTimeout(() => {
+                isSpinningCase = false; btn.disabled = false;
+                track.style.transition = 'none'; track.style.transform = 'translateX(0)';
+                tg.showAlert(`Вы выиграли: ${res.gift.name}`);
+                closeCase();
+            }, 3000);
+        }
 
         async function activatePromo() {
             const code = document.getElementById('promo-code').value.trim();
@@ -238,8 +332,7 @@
                 }, 5000);
             } catch(e) { tg.showAlert('Отменено или ошибка'); }
         }
-
-        async function openInventory(forUpgrade = false) {
+                        async function openInventory(forUpgrade = false) {
             document.getElementById('invModal').classList.add('active');
             document.getElementById('inv-list').innerHTML = 'Загрузка...';
             const res = await api('/api/inventory', { id: userId });
@@ -299,7 +392,8 @@
             document.getElementById('crashPlay').style.display = 'none';
             setTimeout(closeCrash, 1500);
         }
-               // --- МИНЫ ---
+
+        // --- МИНЫ ---
         let mGameId = null, mBet = 0, mOpened = 0, mMult = 1.0, mMines = 3;
         function openMines() { document.getElementById('minesModal').classList.add('active'); resetMines(); }
         function closeMines() { closeModal('minesModal'); checkSubscription(); }
